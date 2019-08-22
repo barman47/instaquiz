@@ -1,36 +1,28 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component, Fragment } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-import FacebookLogin from 'react-facebook-login';
-import GoogleLogin from 'react-google-login';
+import ScrollToTop from './components/layout/ScrollToTop';
+import Header from './components/layout/Header'
+import Home from './components/Home'
+import Footer from './components/layout/Footer'
+
+import store from './store';
 
 class App extends Component {
 	render () {
-		const responseFacebook = (response) => {
-			console.log(response);
-		}
-
-		const responseGoogle = (response) => {
-			console.log(response);
-		}
-
 		return (
-			<div className="App">
-				<h1>Login With Facebook anf Google</h1>
-
-				<FacebookLogin 
-					appId="2555646991164200"
-					fields="name, email, picture"
-					callback={responseFacebook}
-				/>
-
-				{/* <GoogleLogin 
-					clientId=""
-					buttonText="Login with Google"
-					onSuccess={responseGoogle}
-					onFailure={responseGoogle}
-				/> */}
-			</div>
+			<Provider store={store}>
+				<Router>
+					<ScrollToTop>
+						<Fragment>
+							<Header />
+							<Route path="/" exact component={Home} />
+							<Footer />
+						</Fragment>
+					</ScrollToTop>
+				</Router>
+			</Provider>
 		);
 	}
 }

@@ -228,5 +228,15 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
         .catch(err => console.log(err));
 });
 
+// Gets quiz questions
+// @route GET /api/users/quiz/category/:category
+// @desc get questions by category
+// @access Private
+router.get('/quiz/category/:quizCategory', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Quiz.find({ type: req.params.quizCategory })
+        .then(quizzes => res.json(quizzes))
+        .catch(err => console.log(err));
+});
+
 
 module.exports = router;
