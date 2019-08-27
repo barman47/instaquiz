@@ -10,7 +10,7 @@ const validateAddQuestion = require('../../utils/validation/validateAddQuestion'
 // @route POST /api/quizr
 // @desc add question
 // @access Private
-router.post('/', passport.authenticate('jwt-admin', { session: false }), (req, res) => {
+router.post('/', /*passport.authenticate('jwt-admin', { session: false }),*/ (req, res) => {
     const { errors, isValid } = validateAddQuestion(req.body);
 
     if (!isValid) {

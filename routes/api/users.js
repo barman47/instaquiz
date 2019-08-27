@@ -27,54 +27,54 @@ router.post('/register', (req, res) => {
     }
 
     User.findOne({ username: req.body.username })
-        .then(user => {
-            if (user) {
+        .then(returnedUser => {
+            if (returnedUser) {
                 errors.username = 'Username already exists!';
                 return res.status(406).json(errors);
             }
-        })
-        .catch(err => console.log(err));
+            User.findOne({ email: req.body.email })
+                .then(user => {
+                    if (user) {
+                        errors.email = 'Email already exists!';
+                        
+                        return res.status(406).json(errors);
+                    } 
 
-    User.findOne({ email: req.body.email })
-        .then(user => {
-            if (user) {
-                errors.email = 'Email already exists!';
-                return res.status(406).json(errors);
-            }
-
-            const userData = new User({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password
-            });
-        
-            bcrypt.genSalt(10, (err, salt) => {
-                if (err) {
-                    return console.log(err);
-                }
-        
-                bcrypt.hash(userData.password, salt, (err, hash) => {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    userData.password = hash;
-                    userData.save()
-                        .then(savedUser => {
-                            const userProfile = new Profile({
-                                user: savedUser.id
-                            });
-                            userProfile.save()
-                                .then(profile => {
-                                    console.log(profile);
-                                    res.json(savedUser);
+                    const userData = new User({
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        username: req.body.username,
+                        email: req.body.email,
+                        password: req.body.password
+                    });
+                
+                    bcrypt.genSalt(10, (err, salt) => {
+                        if (err) {
+                            return console.log(err);
+                        }
+                
+                        bcrypt.hash(userData.password, salt, (err, hash) => {
+                            if (err) {
+                                return console.log(err);
+                            }
+                            userData.password = hash;
+                            userData.save()
+                                .then(savedUser => {
+                                    const userProfile = new Profile({
+                                        user: savedUser.id
+                                    });
+                                    userProfile.save()
+                                        .then(profile => {
+                                            console.log(profile);
+                                            res.json(savedUser);
+                                        })
+                                        .catch(err => console.log(err));
                                 })
                                 .catch(err => console.log(err));
-                        })
-                        .catch(err => console.log(err));
-                });
-            });
+                        });
+                    });
+                })
+                .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
 });
@@ -158,12 +158,12 @@ router.put('/changePassword', passport.authenticate('jwt', { session: false }), 
                                     if (err) {
                                         return console.log(err);
                                     }
-                                    bcrypt.compare(hash, user.password)
+                                    bcrypt.compare(newPassword, user.password)
                                         .then(isMatch => {
                                             if (isMatch) {
                                                 console.log('match');
                                                 errors.newPassword = 'New password cannot be the same with the current password';
-                                                return res.status(400).json(errors);
+                                                return res.status(403).json(errors);
                                             } else {
                                                 console.log('no match!');
                                                 user.password = hash;
@@ -237,6 +237,5 @@ router.get('/quiz/category/:quizCategory', passport.authenticate('jwt', { sessio
         .then(quizzes => res.json(quizzes))
         .catch(err => console.log(err));
 });
-
 
 module.exports = router;

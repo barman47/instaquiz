@@ -107,7 +107,7 @@ router.post('/login', (req, res) => {
 // @route POST /api/admin/changePassword
 // @desc change adminpassword
 // @access Private
-router.get('/changePassword', passport.authenticate('jwt-admin', { session: false }), (req, res) => {
+router.put('/changePassword', passport.authenticate('jwt-admin', { session: false }), (req, res) => {
     const { errors, isValid } = validateChangeAdminPassword(req.body);
 
     if (!isValid) {
