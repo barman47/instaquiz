@@ -13,9 +13,6 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-console.log(process.env.NODE_ENV);
-console.log(database_URI);
-
 mongoose.connect(database_URI, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
     .then(() => console.log('Database Connected!'))
     .catch(err => console.log(err));

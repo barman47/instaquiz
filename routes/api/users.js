@@ -36,7 +36,6 @@ router.post('/register', (req, res) => {
                 .then(user => {
                     if (user) {
                         errors.email = 'Email already exists!';
-                        
                         return res.status(406).json(errors);
                     } 
 
@@ -65,8 +64,7 @@ router.post('/register', (req, res) => {
                                     });
                                     userProfile.save()
                                         .then(profile => {
-                                            console.log(profile);
-                                            res.json(savedUser);
+                                            res.json({ message: 'Registration Successful!' });
                                         })
                                         .catch(err => console.log(err));
                                 })

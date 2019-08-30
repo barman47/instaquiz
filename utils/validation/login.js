@@ -8,11 +8,11 @@ module.exports = (data) => {
     data.password = !isEmpty(data.password) ?  data.password : '';
 
     if (Validator.isEmpty(data.username)) {
-        errors.username = 'username is required!';
+        errors.username = 'Username is required!';
     }
 
     if (Validator.isEmpty(data.password)) {
-        errors.password = 'password is required!';
+        errors.password = 'Password is required!';
     }
 
     return {

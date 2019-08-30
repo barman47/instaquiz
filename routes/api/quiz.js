@@ -43,6 +43,12 @@ router.post('/', /*passport.authenticate('jwt-admin', { session: false }),*/ (re
         .catch(err => console.log(err));
 });
 
+router.get('/getFreeQuiz', (req, res) => {
+    Quiz.find()
+        .then(quizzes => res.json(quizzes))
+        .catch(err => console.log(err));
+});
+
 // Gets all quiz questions
 // @route GET /api/quiz/all
 // @desc get questions

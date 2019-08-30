@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+
+body {
+    color: $off-black;
+    overflow-x: hidden;
+    font-family: $quicksand;
+}
+
+.invalid {
+    color: $error-text !important;
+}
+
+.toast-invalid {
+    background-color: $error-text !important;
+    border-radius: 5px !important;
+    color: $off-white !important;
+}
+
+.toast-valid {
+    background-color: $success-text !important;
+    border-radius: 5px !important;
+    color: $off-white !important;
+}
+
+/* label color */
+.input-field label {
+    color: $gray !important;
+}
+
+/* label focus color */
+.input-field input[type=text]:focus + label {
+    color: $blue !important;
+}
+
+/* label underline focus color */
+.input-field input[type=text]:focus, .input-field input[type=email]:focus, .input-field input[type=password]:focus {
+    border-bottom: 1px solid $blue !important;
+    box-shadow: 0 1px 0 0 $blue !important;
+}
+
+/* valid color */
+.input-field input[type=text].valid, .input-field input[type=email].valid, .input-field input[type=password].valid {
+    border-bottom: 1px solid $success-text !important;
+    box-shadow: 0 1px 0 0 0 $success-text !important;
+}
+
+/* invalid color */
+.input-field input[type=text].invalid, .input-field input[type=email].valid, .input-field input[type=password].valid {
+    border-bottom: 1px solid $error-text !important;
+    box-shadow: 0 1px 0 0 $error-text !important;
+}
+
+/* icon prefix focus color */
+.input-field .prefix.active {
+    color: $blue !important;
+}
+
+.input-field .prefix {
+    color: darken($gray, 30%) !important;
+}
+
+.input-field .form-input.valid::before {
+    color: darken($gray, 30%) !important;
+}

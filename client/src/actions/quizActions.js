@@ -12,3 +12,16 @@ export const fetchQuiz = () => dispatch => {
             payload: err.response.data
         }));
 };
+
+export const getFreeQuestions = () => (dispatch) => {
+    axios.get('/api/quiz/getFreeQuiz')
+        .then(res => 
+            dispatch({
+                type: LOAD_QUIZ,
+                payload: res.data
+            })
+        )
+        .catch(err => {
+            console.log(err);
+        });
+};

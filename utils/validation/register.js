@@ -27,10 +27,10 @@ module.exports = (data) => {
     }
 
     if (!Validator.isLength(data.username, { min: 5, max: 15 })) {
-        errors.username = 'username must be from 5 to 15 characters long!'
+        errors.username = 'Username must be from 5 to 15 characters long!'
     }
     if (Validator.isEmpty(data.username)) {
-        errors.username = 'username is required!';
+        errors.username = 'Username is required!';
     }
 
     if (Validator.isEmpty(data.email)) {
@@ -42,10 +42,18 @@ module.exports = (data) => {
     }
 
     if (!Validator.isLength(data.password, { min: 8})) {
-        errors.password = 'password must be at least 8 characters long!'
+        errors.password = 'Password must be at least 8 characters long!'
     }
     if (Validator.isEmpty(data.password)) {
-        errors.password = 'password is required!';
+        errors.password = 'Password is required!';
+    }
+
+    if (Validator.isEmpty(data.confirmPassword)) {
+        errors.confirmPassword = 'Please confirm your password!';
+    }
+
+    if (!Validator.equals(data.password, data.confirmPassword)) {
+        errors.confirmPassword = 'Passwords do not match!';
     }
 
     return {

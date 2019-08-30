@@ -1,0 +1,86 @@
+#home {
+    background-image: url('../../img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+
+    section {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 5px;
+        height: 80%;
+        width: 35%;
+        padding-left: $md;
+        padding-right: $md;
+    }
+    
+    .cube {
+        font-size: 8rem;
+        color: $orange;
+    }
+
+    h1 {
+        text-align: center;
+        color: $off-white;
+    }
+    
+    .playButton {
+        background-color: $green;
+        border: none;
+        border-radius: $button-radius;
+        cursor: pointer;
+        width: 100%;
+        padding: $normal;
+        transition: 0.3s linear all;
+        text-align: center;
+    }
+
+    .playButton a {
+        color: #fff;
+    }
+    
+    .playButton:hover {
+        background-color: darken($green, 10%);
+        box-shadow: $shadow;
+    }
+    
+    .authContainer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .authContainer .authButtons {
+        color: #fff;
+        cursor: pointer;
+        border-radius: $button-radius;
+        margin-top: $md;
+        padding: $normal 0;
+        text-align: center;
+        width: 45%;
+        transition: 0.3s linear all;
+    }
+    
+    #loginButton {
+        background-color: $red;
+    }
+    #loginButton:hover {
+        background-color: darken($red, 10%);
+        box-shadow: $shadow;
+    }
+    
+    #signupButton {
+        background-color: $blue;
+    }
+    #signupButton:hover {
+        background-color: darken($blue, 10%);
+        box-shadow: $shadow;
+    }
+
+}
