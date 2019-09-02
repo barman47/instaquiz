@@ -73,7 +73,7 @@ class FreeQuiz extends Component {
         if (this.state.numberOfQuestions === 0) {
             const questionsArray = Object.keys(this.state.questions).map(i => this.state.questions[i]);
             this.setState({
-                numberOfQuestions: questionsArray.length - 1
+                numberOfQuestions: questionsArray.length
             });
         }
     }
@@ -147,7 +147,7 @@ class FreeQuiz extends Component {
                 {/* {this.state.type ? <h3>{this.state.type}</h3> : <span>No Type found</span>} */}
                 {currentQuestion ? (
                     <div className="question">
-                        <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions + 1}</h6>
+                        <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</h6>
                         <h5>{currentQuestion.question}</h5>
                         <div className="option-container">
                             <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionA}</p>
