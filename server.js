@@ -11,7 +11,7 @@ const users = require('./routes/api/users');
 
 const app = express();
 
-const publicPath = path.resolve(__dirname, 'client', 'public');
+const publicPath = path.resolve(__dirname, 'client', 'public', 'build');
 
 const PORT = process.env.PORT || 5000;
 
@@ -27,6 +27,7 @@ require('./config/passport')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(publicPath));
 
 app.use('/api/admin', admin);
 app.use('/api/profile', profile);
