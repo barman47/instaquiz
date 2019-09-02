@@ -117,6 +117,7 @@ class FreeQuiz extends Component {
     }
 
     wrongAnswer = () => {
+        navigator.vibrate(1000);
         M.toast({
             html: 'Wrong Answer!',
             classes: 'toast-invalid',
