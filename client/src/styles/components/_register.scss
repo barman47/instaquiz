@@ -66,3 +66,28 @@
         outline: none;
     }
 }
+
+@media (max-width: $md-breakpoint) {
+    .signup-container  {
+        height: 100%;
+    }
+
+    .signup-container form {
+        width: 100%;
+        padding-left: $xs;
+        padding-right: $xs;
+    }
+
+    .signup-container form h3 {
+        width: 100%;
+    }
+
+    .signup-container form .row .col {
+        width: 100%;
+    }
+
+    .signup-container form p {
+        margin-bottom: $sm;
+        text-align:center;
+    }
+}

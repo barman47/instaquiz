@@ -78,3 +78,15 @@
         outline: none;
     }
 }
+
+@media (max-width: $md-breakpoint) {
+    .login-container form {
+        padding-left: $sm;
+        padding-right: $sm;
+        width: 100%;
+    }
+
+    .login-container form h3 {
+        width: 100%;
+    }
+}

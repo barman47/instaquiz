@@ -25,10 +25,12 @@ class Home extends Component {
                             <span className="mdi mdi-cube-outline cube"></span>
                         </div>
                         <h1>InstaQuiz</h1>
-                        <div>
-                            <p className="playButton">
-                                <Link to="/play">Play</Link>
-                            </p>
+                        <div className="playButtonContainer">
+                            <ul>
+                                <li>
+                                    <Link className="playButton" to="/play">Play</Link>
+                                </li>
+                            </ul>
                         </div>
                         <div className="authContainer">
                             <Link to="/login" className="authButtons" id="loginButton">Login</Link>

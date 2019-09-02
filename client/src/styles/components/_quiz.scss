@@ -107,4 +107,17 @@
     .option {
         width: 100% !important;
     }
+
+    .buttonContainer {
+        padding-left: $xs;
+        padding-right: $xs;
+        margin: 0;
+    }
+
+    .buttonContainer button {
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: row-reverse;
+    }
+
 }

@@ -29,20 +29,22 @@
         text-align: center;
         color: $off-white;
     }
+
+    .playButtonContainer {
+        width: 100%;
+    }
     
-    .playButton {
+    a.playButton {
         background-color: $green;
         border: none;
         border-radius: $button-radius;
+        color: #fff;
         cursor: pointer;
-        width: 100%;
+        display: block;
         padding: $normal;
         transition: 0.3s linear all;
         text-align: center;
-    }
-
-    .playButton a {
-        color: #fff;
+        // width: 100%;
     }
     
     .playButton:hover {
@@ -82,5 +84,17 @@
         background-color: darken($blue, 10%);
         box-shadow: $shadow;
     }
+}
 
+@media (max-width: $md-breakpoint) {
+    #home {
+        display: block;
+    }
+
+    #home section {
+        // padding: 0;
+        padding: 0 $normal;
+        width: 100%;
+        height: 100%
+    }
 }
