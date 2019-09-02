@@ -1,9 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Darker+Grotesque:300|Quicksand|Roboto:100&display=swap');
 @import './base/settings';
 @import './base/base';
+@import './components/navigation';
 @import './components/home';
 @import './components/login';
 @import './components/register';
+@import './components/quiz';
+@import './components/footer';
 
 // font-family: 'Quicksand', sans-serif;
 // font-family: 'Darker Grotesque', sans-serif;

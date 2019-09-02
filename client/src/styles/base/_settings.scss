@@ -4,11 +4,18 @@ $darker-grotesque: 'Darker Grotesque', sans-serif;
 $roboto: 'Roboto', sans-serif;
 
 // Sizes
+$xs: 0.5rem;
 $normal: 1rem;
 $sm: 1.5rem;
 $md: 2rem;
 $lg: 3rem;
 $xlg: 5rem;
+
+// Font sizes
+$normal-font: 1.3rem;
+
+// Breakpoints
+$md-breakpoint: 768px;
 
 // Colors
 $blue: #1da1f2;

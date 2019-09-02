@@ -11,54 +11,30 @@ const QuizSchema = new Schema({
         type: String,
         required: true
     },
-
-    image: {
-        type: String
-    },
-
+    
     optionA: {
-        type: Object,
-        text: {
-            type: String,
-            required: true
-        },
-        answer: {
-            type: Boolean,
-            required: true
-        }
+        type: String,
+        required: true
     },
+
     optionB: {
-        type: Object,
-        text: {
-            type: String,
-            required: true
-        },
-        answer: {
-            type: Boolean,
-            required: true
-        }
+        type: String,
+        required: true
     },
+
     optionC: {
-        type: Object,
-        text: {
-            type: String,
-            required: true
-        },
-        answer: {
-            type: Boolean,
-            required: true
-        }
+        type: String,
+        required: true
     },
+
     optionD: {
-        type: Object,
-        text: {
-            type: String,
-            required: true
-        },
-        answer: {
-            type: Boolean,
-            required: true
-        }
+        type: String,
+        required: true
+    },
+
+    answer: {
+        type: String,
+        required: true
     },
 
     createdAt: {

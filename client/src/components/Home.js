@@ -1,15 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 
-import { getFreeQuestions } from '../actions/quizActions';
+// import { getFreeQuestions } from '../actions/quizActions';
 
 class Home extends Component {
 
-    componentDidMount () {
-        this.props.getFreeQuestions();
-    }
+    // componentDidMount () {
+    //     this.props.getFreeQuestions();
+    // }
 
     handlePlayButtonClick = () => {
         this.props.history.push('/');
@@ -41,8 +41,8 @@ class Home extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    quiz: state.quiz
-});
+// const mapStateToProps = (state) => ({
+//     quiz: state.quiz
+// });
 
-export default connect(mapStateToProps, { getFreeQuestions })(Home);
+export default Home;

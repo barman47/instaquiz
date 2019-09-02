@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
-
+const path = require('path');
 const { database_URI } = require('./config/keys');
 
 const admin = require('./routes/api/admin');
@@ -10,6 +10,8 @@ const quiz = require('./routes/api/quiz');
 const users = require('./routes/api/users');
 
 const app = express();
+
+const publicPath = path.resolve(__dirname, 'client', 'public');
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,6 +32,10 @@ app.use('/api/admin', admin);
 app.use('/api/profile', profile);
 app.use('/api/quiz', quiz);
 app.use('/api/users', users);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(publicPath, 'index.html'));
+});
 
 app.get('/', (req, res) => {
     res.send({

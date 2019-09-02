@@ -32,11 +32,10 @@ export const loginUser = (user) => (dispatch) => {
 
         })
         .catch(err => {
-            console.log(err);
-            // dispatch({
-            //     type: GET_ERRORS,
-            //     payload: err.response.data
-            // });
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
         });
 };
 

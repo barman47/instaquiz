@@ -4,7 +4,7 @@ const router = express.Router();
 
 const Quiz = require('../../models/Quiz');
 
-const validateAddQuestion = require('../../utils/validation/validateAddQuestion');
+const validateAddQuestion = require('../../utils/validation/addQuestion');
 
 // Add new quiz question
 // @route POST /api/quizr
@@ -20,22 +20,12 @@ router.post('/', /*passport.authenticate('jwt-admin', { session: false }),*/ (re
     const quiz = new Quiz({
         type: req.body.type,
         question: req.body.question,
-        optionA: {
-            text: req.body.optionAText,
-            answer: req.body.optionAAnswer
-        },
-        optionB: {
-            text: req.body.optionBText,
-            answer: req.body.optionBAnswer
-        },
-        optionC: {
-            text: req.body.optionCText,
-            answer: req.body.optionCAnswer
-        },
-        optionD: {
-            text: req.body.optionDText,
-            answer: req.body.optionDAnswer
-        }
+        optionA: req.body.optionA,
+        optionB: req.body.optionB,
+        optionC: req.body.optionC,
+        optionD: req.body.optionD,
+        answer: req.body.answer
+        
     });
 
     quiz.save()
@@ -43,10 +33,18 @@ router.post('/', /*passport.authenticate('jwt-admin', { session: false }),*/ (re
         .catch(err => console.log(err));
 });
 
+// Gets free quiz questions
+// @route GET /api/quiz/getFreeQuiz
+// @desc get questions
+// @access Private
 router.get('/getFreeQuiz', (req, res) => {
-    Quiz.find()
-        .then(quizzes => res.json(quizzes))
-        .catch(err => console.log(err));
+    Quiz.aggregate([{ $sample: { size: 10 } }])
+        .exec((err, result) => {
+            if (err) {
+                return console.log(err);
+            }
+            res.json(result);
+        });
 });
 
 // Gets all quiz questions
