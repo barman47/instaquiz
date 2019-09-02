@@ -11,7 +11,7 @@ const users = require('./routes/api/users');
 
 const app = express();
 
-const publicPath = path.resolve(__dirname, 'client', 'public', 'build');
+const publicPath = path.resolve(__dirname, 'client', 'build');
 
 const PORT = process.env.PORT || 5000;
 
