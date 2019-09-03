@@ -1,11 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import M from 'materialize-css';
+import moment from 'moment';
 
-import { getFreeQuestions } from '../actions/quizActions';
+import Loader from '../common/Loader';
 
-import isEmpty from '../validation/is-empty';
+import { getFreeQuestions } from '../../actions/quizActions';
+
+import isEmpty from '../../validation/is-empty';
+
+import correctNotification from '../../assets/audio/correct-answer.mp3';
+import wrongNotification from '../../assets/audio/wrong-answer.mp3';
+import buttonSound from '../../assets/audio/button-sound.mp3';
 
 class FreeQuiz extends Component {
     constructor (props) {
@@ -23,15 +30,21 @@ class FreeQuiz extends Component {
             score: 0,
             correctAnswers: 0,
             wrongAnswers: 0,
-            loading: false
+            loading: false,
+            time: {}
         };
+        this.interval = null
     }
 
-    UNSAFE_componentWillMount () {
+    componentDidMount () {
         this.props.getFreeQuestions();
         this.setState({
             loading: true
         });
+    }
+
+    componentWillMount () {
+        clearInterval(this.interval);
     }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
@@ -39,9 +52,11 @@ class FreeQuiz extends Component {
             this.setState({
                 questions: nextProps.quiz.questions,
                 type: nextProps.quiz.type,
+                numberOfQuestions: nextProps.quiz.numberOfQuestions,
                 loading: false
             }, () => {
                 this.displayQuestion(this.state.questions);
+                // this.startTimer();
             });
         }
     }
@@ -79,22 +94,36 @@ class FreeQuiz extends Component {
     }
     
     handleNextButtonClick = (e) => {
-        this.setState((prevState) => ({
-            currentQuestionIndex: prevState.currentQuestionIndex + 1
-        }), () => {
-            this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
-        });
+        this.playButtonSound();
+        if (this.state.nextQuestion !== undefined) {
+            this.setState((prevState) => ({
+                currentQuestionIndex: prevState.currentQuestionIndex + 1
+            }), () => {
+                this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            });
+        }
     };
 
     handlePreviousButtonClick = (e) => {
-        this.setState((prevState) => ({
-            currentQuestionIndex: prevState.currentQuestionIndex - 1
-        }), () => {
-            this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
-        });
+        this.playButtonSound();
+        if (this.state.previousQuestion !== undefined) {
+            this.setState((prevState) => ({
+                currentQuestionIndex: prevState.currentQuestionIndex - 1
+            }), () => {
+                this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            });
+        }
+    }
+
+    hadleQuitButtonClick = (e) => {
+        this.playButtonSound();
+        if (window.confirm ('Are yoiu sure you want to quit?')) {
+            this.props.history.push('/');
+        }
     }
 
     correctAnswer = () => {
+        document.getElementById('correct-audio').play();
         M.toast({
             html: 'Correct Answer!',
             classes: 'toast-valid',
@@ -117,6 +146,7 @@ class FreeQuiz extends Component {
     }
 
     wrongAnswer = () => {
+        document.getElementById('wrong-audio').play();
         navigator.vibrate(1000);
         M.toast({
             html: 'Wrong Answer!',
@@ -138,17 +168,67 @@ class FreeQuiz extends Component {
         });
     }
 
+    startTimer = () => {
+        const countDownTime = new Date().getMinutes();
+        // const countDownTime = new Date().() + (1000 * 60 * 60 * 15);
+        this.interval = setInterval(() => {
+            const now = new Date();
+            const distance = countDownTime - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (distance < 0) {
+                clearInterval(this.interval);
+                this.setState({
+                    ...this.state,
+                    time: {
+                        days: '00',
+                        hours: '00',
+                        minutes: '00',
+                        seconds: '00'
+                    }
+                });
+            } else {
+                this.setState({
+                    ...this.state,
+                    time: {
+                        days,
+                        hours,
+                        seconds,
+                        minutes
+                    }
+                });
+            }
+        }, 1000);
+    }
+
+    playButtonSound = () => {
+        document.getElementById('button-sound').play();
+    }
+
     render () {
-        const { currentQuestion } = this.state;
-        
-        return (
-            <div id="quiz">
-                <h3>Free Quiz Mode</h3>
-                
-                {/* {this.state.type ? <h3>{this.state.type}</h3> : <span>No Type found</span>} */}
-                {currentQuestion ? (
+        const { currentQuestion, questions, loading, time } = this.state;
+
+        let quizContent;
+
+        if (isEmpty(questions) || loading === true) {
+            quizContent = <Loader />;
+        } else {
+            quizContent =  (
+                <Fragment>
+                    <Fragment>
+                        <audio id="correct-audio" src={correctNotification}></audio>
+                        <audio id="wrong-audio" src={wrongNotification}></audio>
+                        <audio id="button-sound" src={buttonSound}></audio>
+                    </Fragment>
                     <div className="question">
-                        <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</h6>
+                        <span>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</span>
+                        <span className="right">00:00</span>
+                        {/* <span className="right">{time.minutes}:{time.seconds}</span> */}
+                        {/* <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</h6> */}
                         <h5>{currentQuestion.question}</h5>
                         <div className="option-container">
                             <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionA}</p>
@@ -159,12 +239,21 @@ class FreeQuiz extends Component {
                             <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionD}</p>
                         </div>
                     </div>
-                ) : null}
-                <div className="buttonContainer">
-                    <button onClick={this.handlePreviousButtonClick}><span style={{ marginRight: '5px' }} className="mdi mdi-chevron-double-left left"></span>Previous</button>
-                    <button onClick={this.handleNextButtonClick}><span style={{ marginLeft: '5px' }} className="mdi mdi-chevron-double-right right"></span>Next</button>
-                    <button><span style={{ marginLeft: '5px' }} className="mdi mdi-close right"></span>Quit</button>
-                </div>
+                    
+                    <div className="buttonContainer">
+                        <button onClick={this.handlePreviousButtonClick}><span style={{ marginRight: '5px' }} className="mdi mdi-chevron-double-left left"></span>Previous</button>
+                        <button onClick={this.handleNextButtonClick}><span style={{ marginLeft: '5px' }} className="mdi mdi-chevron-double-right right"></span>Next</button>
+                        <button onClick={this.hadleQuitButtonClick}><span style={{ marginLeft: '5px' }} className="mdi mdi-close right"></span>Quit</button>
+                    </div>
+                </Fragment>
+            );
+        }
+        
+        return (
+            <div id="quiz">
+                <h3>Free Quiz Mode</h3>
+                {/* {this.state.type ? <h3>{this.state.type}</h3> : <span>No Type found</span>} */}
+                {quizContent}
             </div>
         );
     }

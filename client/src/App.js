@@ -9,8 +9,8 @@ import Home from './components/Home'
 import Footer from './components/layout/Footer'
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import Play from './components/Play';
-import FreeQuiz from './components/FreeQuiz';
+import Play from './components/free-quiz/Play';
+import FreeQuiz from './components/free-quiz/FreeQuiz';
 
 import store from './store';
 import setAuthToken from './utils/setAuthToken';

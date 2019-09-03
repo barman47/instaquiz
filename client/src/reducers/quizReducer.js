@@ -3,6 +3,7 @@ import { LOAD_QUIZ, SET_QUIZ_LOADING } from '../actions/types';
 const initialState = {
     questions: null,
     type: null,
+    numberOfQuestions: 0,
     loading: false
 };
 
@@ -13,6 +14,7 @@ export default (state = initialState, action) => {
                 ...state,
                 questions: action.payload,
                 type: action.payload[0].type,
+                numberOfQuestions: action.payload.length,
                 loading: false
             };
         

@@ -66,3 +66,13 @@ body {
 .input-field .form-input.valid::before {
     color: darken($gray, 30%) !important;
 }
+
+.loader {
+    // margin-top: 45vh;
+    // display: flex;
+    // justify-content: center;
+    position: absolute;
+    top: 45vh;
+    left: 45vw;
+
+}
