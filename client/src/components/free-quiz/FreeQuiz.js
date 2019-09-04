@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import M from 'materialize-css';
+import classnames from 'classnames';
 import moment from 'moment';
 
 import Loader from '../common/Loader';
@@ -30,7 +31,11 @@ class FreeQuiz extends Component {
             score: 0,
             correctAnswers: 0,
             wrongAnswers: 0,
+            hints: 10,
+            fiftyFifty: 2,
             loading: false,
+            previousButtonDisabled: true,
+            nextButtonDisabled: false,
             time: {}
         };
         this.interval = null
@@ -56,7 +61,30 @@ class FreeQuiz extends Component {
                 loading: false
             }, () => {
                 this.displayQuestion(this.state.questions);
+                this.handleDisableButton();
                 // this.startTimer();
+            });
+        }
+    }
+
+    handleDisableButton = () => {
+        if (this.state.previousQuestion === undefined || this.state.currentQuestionIndex === 0) {
+            this.setState({
+                previousButtonDisabled: true
+            });
+        } else {
+            this.setState({
+                previousButtonDisabled: false
+            });
+        }
+
+        if (this.state.nextQuestion === undefined || this.state.currentQuestionIndex + 1 === this.state.numberOfQuestions) {
+            this.setState({
+                nextButtonDisabled: true
+            });
+        } else {
+            this.setState({
+                nextButtonDisabled: false
             });
         }
     }
@@ -74,15 +102,24 @@ class FreeQuiz extends Component {
                 nextQuestion,
                 previousQuestion,
                 answer
+            }, () => {
+                this.showOptions();
+                this.handleDisableButton();
             });
         }
     }
 
     handleOptionClick = (e) => {
         if (e.target.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
-            this.correctAnswer();
+            document.getElementById('correct-audio').play();
+            setTimeout(() => {
+                this.correctAnswer();
+            }, 500);
         } else {
-            this.wrongAnswer();
+            document.getElementById('wrong-audio').play();
+            setTimeout(() => {
+                this.wrongAnswer();
+            }, 500);
         }
     
         if (this.state.numberOfQuestions === 0) {
@@ -94,24 +131,28 @@ class FreeQuiz extends Component {
     }
     
     handleNextButtonClick = (e) => {
-        this.playButtonSound();
-        if (this.state.nextQuestion !== undefined) {
-            this.setState((prevState) => ({
-                currentQuestionIndex: prevState.currentQuestionIndex + 1
-            }), () => {
-                this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
-            });
+        if (!this.state.nextButtonDisabled) {
+            this.playButtonSound();
+            if (this.state.nextQuestion !== undefined) {
+                this.setState((prevState) => ({
+                    currentQuestionIndex: prevState.currentQuestionIndex + 1
+                }), () => {
+                    this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+                });
+            }
         }
     };
 
     handlePreviousButtonClick = (e) => {
-        this.playButtonSound();
-        if (this.state.previousQuestion !== undefined) {
-            this.setState((prevState) => ({
-                currentQuestionIndex: prevState.currentQuestionIndex - 1
-            }), () => {
-                this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
-            });
+        if (!this.state.previousButtonDisabled) {
+            this.playButtonSound();
+            if (this.state.previousQuestion !== undefined) {
+                this.setState((prevState) => ({
+                    currentQuestionIndex: prevState.currentQuestionIndex - 1
+                }), () => {
+                    this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+                });
+            }
         }
     }
 
@@ -122,12 +163,82 @@ class FreeQuiz extends Component {
         }
     }
 
+    handleLifeline = (e) => {
+        switch (e.target.id) {
+            case 'fiftyfifty':
+                if (this.state.fiftyFifty > 0) {
+                    this.handleFiftyFifty();
+                    this.setState((prevState) => ({
+                        fiftyFifty: prevState.fiftyFifty - 1
+                    }));
+                }
+                break;
+
+            case 'hints':
+                if (this.state.hints > 0) {
+                    this.handleHints();
+                    this.setState((prevState) => ({
+                        hints: prevState.hints - 1
+                    }));
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // handleFiftyFifty = () => {
+    //     const options = document.querySelectorAll('.option');
+    //     const wrongAnswers = [];
+    //     const questionsIndex = [];
+    //     while (true) {
+    //         const rand = Math.floor((Math.random() * 4) + 1);
+    //         if (questionsIndex.length < 2) {
+    //             if (questionsIndex.includes(rand)) {
+    //                 const newRand = Math.floor((Math.random() * 4) + 1);
+    //                 questionsIndex.push(newRand + 1);
+    //                 // for (let i = 0; i < options.length; i++) {
+    //                 //     if (option[i + 1].innerHTML !== this.state.answer) {
+    //                 //         option.style.visibility = 'none';
+    //                 //     }
+    //                 // }
+    //             } else {
+    //                 const newRand = Math.floor((Math.random() * 4) + 1);
+    //                 questionsIndex.push(rand);   
+    //             }
+    //         } else {
+    //             break;
+    //         }
+    //     }
+    //     console.log(questionsIndex);
+    // }
+
+    handleHints = () => {
+        const options = document.querySelectorAll('.option');
+        const rand = Math.floor((Math.random() * 3) + 1);
+        console.log(rand);
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].innerHTML !== this.state.answer) {
+                console.log(options[i].innerHTML);
+                options[i].style.visibility = 'hidden';
+                break;
+            } 
+        }
+    }
+
+    showOptions = () => {
+        const options = document.querySelectorAll('.option');
+        options.forEach(option => {
+            option.style.visibility = 'visible';
+        })
+    };
+
     correctAnswer = () => {
-        document.getElementById('correct-audio').play();
         M.toast({
             html: 'Correct Answer!',
             classes: 'toast-valid',
-            displayLength: 2000
+            displayLength: 1500
         });
         this.setState((prevState) => ({
             score: prevState.score + 1,
@@ -139,19 +250,17 @@ class FreeQuiz extends Component {
                 alert(`Quiz has ended!, you scored ${this.state.score} out of ${this.state.numberOfQuestions}`);
                 return false;
             } else {
-                console.log('Quiz is still on!');
                 this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
         });
     }
 
     wrongAnswer = () => {
-        document.getElementById('wrong-audio').play();
         navigator.vibrate(1000);
         M.toast({
             html: 'Wrong Answer!',
             classes: 'toast-invalid',
-            displayLength: 2000
+            displayLength: 1500
         });
         this.setState((prevState) => ({
             wrongAnswers: prevState.wrongAnswers + 1,
@@ -162,7 +271,6 @@ class FreeQuiz extends Component {
                 alert(`Quiz has ended!, you scored ${this.state.score} out of ${this.state.numberOfQuestions}`);
                 return false;
             } else {
-                console.log('Quiz is still on!');
                 this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
         });
@@ -225,8 +333,44 @@ class FreeQuiz extends Component {
                         <audio id="button-sound" src={buttonSound}></audio>
                     </Fragment>
                     <div className="question">
-                        <span>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</span>
-                        <span className="right">00:00</span>
+                        <div className="lifeline-container">
+                            <p>
+                                <span
+                                    onClick={this.handleLifeline}
+                                    id="fiftyfifty"
+                                    className={classnames('mdi mdi-set-center mdi-24px lifeline-icon', {
+                                        'lifeline-icon-empty': this.state.fiftyFifty === 0
+                                    })}>
+                                        <span className="lifeline">{this.state.fiftyFifty}</span>
+                                </span>
+                            </p>
+                            <p>
+                                {this.state.hints > 0 
+                                    ?
+                                     <span 
+                                        onClick={this.handleLifeline}
+                                        id="hints" 
+                                        className={classnames('mdi mdi-lightbulb-on mdi-24px lifeline-icon', {
+                                            'lifeline-icon-empty': this.state.hints === 0
+                                        })}>
+                                            <span className="lifeline">{this.state.hints}</span>
+                                    </span> 
+                                    : 
+                                    <span 
+                                        onClick={this.handleLifeline}
+                                        id="hints" 
+                                        className={classnames('mdi mdi-lightbulb-on-outline mdi-24px lifeline-icon', {
+                                            'lifeline-icon-empty': this.state.hints === 0
+                                        })}>
+                                            <span className="lifeline">{this.state.hints}</span>
+                                    </span> 
+                                }
+                            </p>
+                        </div>
+                        <p>
+                            <span>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</span>
+                            <span className="right">00:00</span>
+                        </p>
                         {/* <span className="right">{time.minutes}:{time.seconds}</span> */}
                         {/* <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</h6> */}
                         <h5>{currentQuestion.question}</h5>
@@ -241,9 +385,32 @@ class FreeQuiz extends Component {
                     </div>
                     
                     <div className="buttonContainer">
-                        <button onClick={this.handlePreviousButtonClick}><span style={{ marginRight: '5px' }} className="mdi mdi-chevron-double-left left"></span>Previous</button>
-                        <button onClick={this.handleNextButtonClick}><span style={{ marginLeft: '5px' }} className="mdi mdi-chevron-double-right right"></span>Next</button>
-                        <button onClick={this.hadleQuitButtonClick}><span style={{ marginLeft: '5px' }} className="mdi mdi-close right"></span>Quit</button>
+                        <button
+                            className={classnames('', { 'disable': this.state.previousButtonDisabled })}
+                            onClick={this.handlePreviousButtonClick}>
+                                <span 
+                                    style={{ marginRight: '5px' }} 
+                                    className="mdi mdi-chevron-double-left left">
+                                </span>
+                            Previous
+                        </button>
+                        <button 
+                            className={classnames('', { 'disable': this.state.nextButtonDisabled })}
+                            onClick={this.handleNextButtonClick}>
+                                <span 
+                                    style={{ marginLeft: '5px' }} 
+                                    className="mdi mdi-chevron-double-right right">
+                                </span>
+                                Next
+                            </button>
+                        <button 
+                            onClick={this.hadleQuitButtonClick}>
+                                <span 
+                                    style={{ marginLeft: '5px' }} 
+                                    className="mdi mdi-close right">
+                                </span>
+                            Quit
+                        </button>
                     </div>
                 </Fragment>
             );

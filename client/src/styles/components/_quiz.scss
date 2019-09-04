@@ -12,6 +12,43 @@
     margin: $lg auto 0 auto;
     padding: $sm $md;
 
+    .lifeline-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .lifeline {
+        position: relative;
+        top: -3px;
+    }
+
+    .lifeline-icon {
+        color: $green;
+        // color: $gray;
+        cursor: pointer;
+    }
+
+    .lifeline-icon-empty {
+        color: $red;
+    }
+
+    .lifeline-icon:active {
+        color: darken($orange, 10%);
+    }
+
+    // .life-line {
+    //     display: inline-block;
+    // }
+
+    // .life-line #fifty-fifty {
+
+    // }
+
+    // .life-line #hints {
+    //     display: relative;
+    //     right: 0;
+    // }
+
     h5 {
         font-size: 1.2rem;
         margin-bottom: $lg;
@@ -106,6 +143,14 @@
 
     .option {
         width: 100% !important;
+    }
+
+    .option:hover {
+        background-color: $blue !important;
+    }
+
+    .option:active {
+        background-color: $off-black !important;
     }
 
     .buttonContainer {
