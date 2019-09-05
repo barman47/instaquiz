@@ -31,8 +31,8 @@ class FreeQuiz extends Component {
             score: 0,
             correctAnswers: 0,
             wrongAnswers: 0,
-            hints: 10,
-            fiftyFifty: 5,
+            hints: 5,
+            fiftyFifty: 3,
             usedFiftyFifty: false,
             loading: false,
             previousButtonDisabled: true,
@@ -48,8 +48,8 @@ class FreeQuiz extends Component {
             loading: true
         });
     }
-
-    UNSAFE_componentWillMount () {
+    
+    componentWillUnmount () {
         clearInterval(this.interval);
     }
 
