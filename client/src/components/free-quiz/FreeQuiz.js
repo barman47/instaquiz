@@ -32,7 +32,8 @@ class FreeQuiz extends Component {
             correctAnswers: 0,
             wrongAnswers: 0,
             hints: 10,
-            fiftyFifty: 2,
+            fiftyFifty: 5,
+            usedFiftyFifty: false,
             loading: false,
             previousButtonDisabled: true,
             nextButtonDisabled: false,
@@ -48,7 +49,7 @@ class FreeQuiz extends Component {
         });
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         clearInterval(this.interval);
     }
 
@@ -166,7 +167,7 @@ class FreeQuiz extends Component {
     handleLifeline = (e) => {
         switch (e.target.id) {
             case 'fiftyfifty':
-                if (this.state.fiftyFifty > 0) {
+                if (this.state.fiftyFifty > 0 && this.state.usedFiftyFifty === false) {
                     this.handleFiftyFifty();
                     this.setState((prevState) => ({
                         fiftyFifty: prevState.fiftyFifty - 1
@@ -188,42 +189,79 @@ class FreeQuiz extends Component {
         }
     }
 
-    // handleFiftyFifty = () => {
-    //     const options = document.querySelectorAll('.option');
-    //     const wrongAnswers = [];
-    //     const questionsIndex = [];
-    //     while (true) {
-    //         const rand = Math.floor((Math.random() * 4) + 1);
-    //         if (questionsIndex.length < 2) {
-    //             if (questionsIndex.includes(rand)) {
-    //                 const newRand = Math.floor((Math.random() * 4) + 1);
-    //                 questionsIndex.push(newRand + 1);
-    //                 // for (let i = 0; i < options.length; i++) {
-    //                 //     if (option[i + 1].innerHTML !== this.state.answer) {
-    //                 //         option.style.visibility = 'none';
-    //                 //     }
-    //                 // }
-    //             } else {
-    //                 const newRand = Math.floor((Math.random() * 4) + 1);
-    //                 questionsIndex.push(rand);   
-    //             }
-    //         } else {
-    //             break;
-    //         }
-    //     }
-    //     console.log(questionsIndex);
-    // }
+    handleFiftyFifty = () => {
+        const options = document.querySelectorAll('.option');
+        const randomNumbers = [];
+        let indexOfAnswer;
+        let optionsIndex = [0, 1, 2, 3];
+
+        options.forEach((option, index) => {
+            if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
+                indexOfAnswer = index;
+            }
+        });
+
+        let count = 0;
+        do {
+            const randomNumber = Math.floor(Math.random() * 4);
+            if (randomNumber !== indexOfAnswer) {
+                if (randomNumbers.length < 2) {
+                    if (!randomNumbers.includes(randomNumber) && !randomNumbers.includes(indexOfAnswer)) {
+                        randomNumbers.push(randomNumber);
+                        count ++;
+                    } else {
+                        while (true) {
+                            const newRandomNumber = Math.floor(Math.random() * 4);
+                            if (!randomNumbers.includes(newRandomNumber) && newRandomNumber !== indexOfAnswer) {
+                                randomNumbers.push(newRandomNumber);
+                                count ++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } 
+        } while (count < 2);
+            options.forEach((option, index) => {
+            if (randomNumbers.includes(index)) {
+                option.style.visibility = 'hidden';
+            }
+        });
+        this.setState({
+            usedFiftyFifty: true
+        });
+    } 
 
     handleHints = () => {
         const options = document.querySelectorAll('.option');
-        const rand = Math.floor((Math.random() * 3) + 1);
-        console.log(rand);
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].innerHTML !== this.state.answer) {
-                console.log(options[i].innerHTML);
-                options[i].style.visibility = 'hidden';
+        let indexOfAnswer;
+
+        options.forEach((option, index) => {
+            if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
+                indexOfAnswer = index;
+            }
+        });
+
+        while (true) {
+            const randomNumber = Math.floor(Math.random() * 4);
+            if (randomNumber !== indexOfAnswer) {
+                options.forEach((option, index) => {
+                    if (index === randomNumber) {
+                        option.style.visibility = 'hidden';
+                    }
+                });
                 break;
-            } 
+            } else {
+                const newRandomNumber = Math.floor(Math.random() * 4);
+                if (newRandomNumber !== indexOfAnswer) {
+                    options.forEach((option, index) => {
+                        if (index === newRandomNumber) {
+                            option.style.visibility = 'hidden';
+                        }
+                    });
+                    break;
+                }
+            }
         }
     }
 
@@ -231,7 +269,10 @@ class FreeQuiz extends Component {
         const options = document.querySelectorAll('.option');
         options.forEach(option => {
             option.style.visibility = 'visible';
-        })
+        });
+        this.setState({
+            usedFiftyFifty: false
+        });
     };
 
     correctAnswer = () => {

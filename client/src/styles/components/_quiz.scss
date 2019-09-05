@@ -33,21 +33,9 @@
     }
 
     .lifeline-icon:active {
+        background: none;
         color: darken($orange, 10%);
     }
-
-    // .life-line {
-    //     display: inline-block;
-    // }
-
-    // .life-line #fifty-fifty {
-
-    // }
-
-    // .life-line #hints {
-    //     display: relative;
-    //     right: 0;
-    // }
 
     h5 {
         font-size: 1.2rem;
