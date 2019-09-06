@@ -28,7 +28,7 @@ class Home extends Component {
                         <div className="playButtonContainer">
                             <ul>
                                 <li>
-                                    <Link className="playButton" to="/play">Play</Link>
+                                    <Link className="playButton" to="/play/instructions">Play</Link>
                                 </li>
                             </ul>
                         </div>

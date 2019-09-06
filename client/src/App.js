@@ -10,7 +10,7 @@ import Footer from './components/layout/Footer'
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Play from './components/free-quiz/Play';
-import FreeQuiz from './components/free-quiz/FreeQuiz';
+import FreeGameInstructions from './components/free-quiz/FreeGameInstructions';
 
 import store from './store';
 import setAuthToken from './utils/setAuthToken';
@@ -44,7 +44,7 @@ class App extends Component {
 							<Route path="/login" exact component={Login} />
 							<Route path="/register" exact component={Register} />
 							<Route path="/play" exact component={Play} />
-							<Route path="/play/freeQuiz" exact component={FreeQuiz} />
+							<Route path="/play/instructions" exact component={FreeGameInstructions} />
 							<Footer />
 						</Fragment>
 					</ScrollToTop>

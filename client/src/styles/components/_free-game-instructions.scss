@@ -1,0 +1,51 @@
+.instructions {
+    // background-color: $off-white;
+    border: 1px solid darken($off-white, 10%);
+    border-radius: 5px;
+    margin-top: $lg !important;
+    margin-bottom: $lg !important;
+    padding: $xs $sm $lg $sm; 
+
+    h1 {
+        color: $off-black;
+        font-size: $md;
+        text-align: center;
+    }
+
+    .lifeline {
+        position: relative;
+        top: -3px;
+    }
+    
+    .lifeline-icon {
+        color: $green;
+        cursor: pointer;
+    }
+    
+    ul.browser-default {
+        padding-left: 30px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    
+    ul.browser-default li {
+        list-style-type: initial;
+    }
+
+    li ol li {
+        margin-left: 30px;
+    }
+
+    img {
+        width: 80%;
+        height: 50%;
+    }
+
+    // span a {
+    //     color: $off-black;
+    // }
+
+    // span a:hover {
+    //     color: $link-color;
+    // }
+}
