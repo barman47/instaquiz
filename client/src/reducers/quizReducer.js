@@ -1,8 +1,9 @@
-import { LOAD_QUIZ, SET_QUIZ_LOADING } from '../actions/types';
+import { CLEAR_QUIZ_STATS, LOAD_QUIZ, SET_QUIZ_LOADING, END_FREE_QUIZ } from '../actions/types';
 
 const initialState = {
     questions: null,
     type: null,
+    quizStats: {},
     numberOfQuestions: 0,
     loading: false
 };
@@ -17,6 +18,21 @@ export default (state = initialState, action) => {
                 numberOfQuestions: action.payload.length,
                 loading: false
             };
+
+            case END_FREE_QUIZ:
+                return {
+                    ...state,
+                    questions: null,
+                    type: null,
+                    quizStats: action.payload,
+                    numberOfQuestions: 0
+                };
+
+            case CLEAR_QUIZ_STATS:
+                return {
+                    ...state,
+                    quizStats: action.payload
+                }
         
             case SET_QUIZ_LOADING:
                 return {

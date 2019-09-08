@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import M from 'materialize-css';
 import classnames from 'classnames';
-import moment from 'moment';
+import { Helmet } from 'react-helmet';
 
 import Loader from '../common/Loader';
 
-import { getFreeQuestions } from '../../actions/quizActions';
+import { getFreeQuestions, endFreeQuiz } from '../../actions/quizActions';
 
 import isEmpty from '../../validation/is-empty';
 
@@ -32,7 +33,7 @@ class Play extends Component {
             correctAnswers: 0,
             wrongAnswers: 0,
             hints: 5,
-            fiftyFifty: 3,
+            fiftyFifty: 2,
             usedFiftyFifty: false,
             loading: false,
             previousButtonDisabled: true,
@@ -47,6 +48,7 @@ class Play extends Component {
         this.setState({
             loading: true
         });
+        this.startTimer();
     }
     
     componentWillUnmount () {
@@ -63,7 +65,6 @@ class Play extends Component {
             }, () => {
                 this.displayQuestion(this.state.questions);
                 this.handleDisableButton();
-                // this.startTimer();
             });
         }
     }
@@ -193,7 +194,6 @@ class Play extends Component {
         const options = document.querySelectorAll('.option');
         const randomNumbers = [];
         let indexOfAnswer;
-        let optionsIndex = [0, 1, 2, 3];
 
         options.forEach((option, index) => {
             if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
@@ -288,8 +288,7 @@ class Play extends Component {
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {
             if (this.state.nextQuestion === undefined) {
-                alert(`Quiz has ended!, you scored ${this.state.score} out of ${this.state.numberOfQuestions}`);
-                return false;
+                this.endGame();
             } else {
                 this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
@@ -309,23 +308,36 @@ class Play extends Component {
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {
             if (this.state.nextQuestion === undefined) {
-                alert(`Quiz has ended!, you scored ${this.state.score} out of ${this.state.numberOfQuestions}`);
-                return false;
+                this.endGame();
             } else {
                 this.displayQuestion(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
         });
     }
 
+    endGame = () => {
+        alert('Quiz has ended!');
+        const quizData = {
+            score: this.state.score,
+            type: this.state.type,
+            numberOfQuestions: this.state.numberOfQuestions,
+            numberOfAnsweredQuestions: this.state.numberOfAnsweredQuestions,
+            correctAnswers: this.state.correctAnswers,
+            wrongAnswers: this.state.wrongAnswers,
+            usedHints: 5 - this.state.hints,
+            usedfiftyFifty: 2 - this.state.fiftyFifty,
+        };
+
+        this.props.endFreeQuiz(quizData, this.props.history)
+    }
+
     startTimer = () => {
-        const countDownTime = new Date().getMinutes();
-        // const countDownTime = new Date().() + (1000 * 60 * 60 * 15);
+        // const countDownTime = Date.now() + 900000;
+        const countDownTime = Date.now() + 180000;        
         this.interval = setInterval(() => {
             const now = new Date();
             const distance = countDownTime - now;
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -334,20 +346,19 @@ class Play extends Component {
                 this.setState({
                     ...this.state,
                     time: {
-                        days: '00',
-                        hours: '00',
-                        minutes: '00',
-                        seconds: '00'
+                        minutes: 0,
+                        seconds: 0
                     }
+                }, () => {
+                    this.endGame();
                 });
             } else {
                 this.setState({
                     ...this.state,
                     time: {
-                        days,
-                        hours,
                         seconds,
-                        minutes
+                        minutes,
+                        distance
                     }
                 });
             }
@@ -368,6 +379,7 @@ class Play extends Component {
         } else {
             quizContent =  (
                 <Fragment>
+                    <Helmet><title>Free Quiz - Instaquiz</title></Helmet>
                     <Fragment>
                         <audio id="correct-audio" src={correctNotification}></audio>
                         <audio id="wrong-audio" src={wrongNotification}></audio>
@@ -410,10 +422,14 @@ class Play extends Component {
                         </div>
                         <p>
                             <span>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</span>
-                            <span className="right">00:00</span>
+                            <span className={classnames('right valid', {
+                                'warning' : time.distance <= 120000,
+                                'invalid' : time.distance < 30000
+                            })}>
+                                <span className="mdi mdi-clock-outline mdi-24px" style={{ position: 'relative', top: '2px' }}></span>
+                                {time.minutes}:{time.seconds}
+                            </span>
                         </p>
-                        {/* <span className="right">{time.minutes}:{time.seconds}</span> */}
-                        {/* <h6>{this.state.currentQuestionIndex + 1} of {this.state.numberOfQuestions }</h6> */}
                         <h5>{currentQuestion.question}</h5>
                         <div className="option-container">
                             <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionA}</p>
@@ -468,6 +484,7 @@ class Play extends Component {
 }
 
 Play.propTypes = {
+    endFreeQuiz: PropTypes.func.isRequired,
     getFreeQuestions: PropTypes.func.isRequired,
     quiz: PropTypes.object.isRequired
 };
@@ -476,4 +493,4 @@ const mapStateToProps = (state) => ({
     quiz: state.quiz
 });
 
-export default connect(mapStateToProps, { getFreeQuestions })(Play);
+export default connect(mapStateToProps, { endFreeQuiz, getFreeQuestions })(withRouter(Play));

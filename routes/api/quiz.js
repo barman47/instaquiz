@@ -38,7 +38,7 @@ router.post('/', /*passport.authenticate('jwt-admin', { session: false }),*/ (re
 // @desc get questions
 // @access Private
 router.get('/getFreeQuiz', (req, res) => {
-    Quiz.aggregate([{ $sample: { size: 10 } }])
+    Quiz.aggregate([{ $sample: { size: 15 } }])
         .exec((err, result) => {
             if (err) {
                 return console.log(err);

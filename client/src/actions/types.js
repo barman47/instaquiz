@@ -4,3 +4,5 @@ export const LOAD_QUIZ = 'LOAD_QUIZ';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SET_QUIZ_LOADING = 'SET_QUIZ_LOADING';
+export const END_FREE_QUIZ = 'END_FREE_QUIZ';
+export const CLEAR_QUIZ_STATS = 'CLEAR_QUIZ_STATS';

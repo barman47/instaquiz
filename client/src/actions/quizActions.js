@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOAD_QUIZ, GET_ERRORS, SET_QUIZ_LOADING } from '../actions/types';
+import { LOAD_QUIZ, GET_ERRORS, SET_QUIZ_LOADING, END_FREE_QUIZ, CLEAR_QUIZ_STATS } from '../actions/types';
 
 export const fetchQuiz = () => dispatch => {
     axios.get('/api/quiz/all')
@@ -25,6 +25,19 @@ export const getFreeQuestions = () => (dispatch) => {
             console.error(err);
         });
 };
+
+export const endFreeQuiz = (quizData, history) => (dispatch) => {
+    dispatch({
+        type: END_FREE_QUIZ,
+        payload: quizData
+    });
+    history.push('/play/quizSummary');
+};
+
+export const clearQuizStats = () => (dispatch) => dispatch({
+    type: CLEAR_QUIZ_STATS,
+    payload: {}
+});
 
 export const setQuizLoading = () => {
     return {

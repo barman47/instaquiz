@@ -1,0 +1,110 @@
+.quiz-summary {
+    font-family: $quicksand;
+
+    span.success-icon {
+        color: $green;
+        font-size: $xxlg;
+    }
+
+    h1 {
+        color: $green;
+        text-align: center;
+        font-size: $lg;
+        margin-top: -$sm;
+    }
+
+    .stats {
+        background-color: $off-white;
+        max-width: 50%;
+        padding-top: $sm;
+        padding-left: $md;
+        padding-right: $md;
+        padding-bottom: $md;
+    }
+
+    .stats h4, .stats h2 {
+        text-align: center;
+    }
+
+    .stats h4 {
+        color: lighten($off-black, 10%);
+    }
+
+    .stats .stat {
+        color: $off-black;
+        font-size: $normal;
+    }
+
+    section p {
+        text-align: center;
+        margin-top: $sm;
+        margin-bottom: $sm;
+    }
+
+    section p a:hover {
+        text-decoration: underline;
+    }
+
+    section ul {
+        margin-top: $sm;
+        text-align: center;
+    }
+
+    section ul li {
+        display: inline-block;
+        // padding: $xs;
+    }
+
+    section ul li a {
+        padding: $sm !important;
+    }
+    section ul li a:hover {
+        color: $off-white !important;
+    }
+
+    section ul li:first-child {
+        border: 1px solid $blue;
+        margin-right: $sm;
+        transition: 0.3s linear all;
+    }
+
+    section ul li:first-child:hover {
+        background-color: $blue;
+    }
+
+    section ul li:last-child a {
+        color: $green;
+    }
+
+    section ul li:last-child {
+        border: 1px solid green;
+    }
+
+    section ul li:last-child:hover {
+        background-color: $green;
+    }
+
+    .no-stats {
+        color: $off-black;
+        margin: $xxlg auto;
+    }
+}
+
+.perfect-score {
+    color: $blue;
+}
+
+@media (max-width: $md-breakpoint) {
+    .quiz-summary h1 {
+        font-size: $sm;
+        padding-left: $xs;
+        padding-right: $xs;
+    }
+
+    div.container.stats {
+        margin: 0;
+        padding: $sm;
+        max-width: 100%;
+        width: 100%;
+    }
+}
