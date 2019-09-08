@@ -8,6 +8,8 @@ import TextInputGroup from '../input-groups/TextInputGroup';
 
 import { loginUser } from '../../actions/authActions';
 
+import isEmpty from '../../validation/is-empty';
+
 class Login extends Component {
     constructor (props) {
         super(props);
@@ -22,14 +24,14 @@ class Login extends Component {
         const username = document.getElementById('username');
         const password = document.getElementById('password');
 
-        if (nextProps.errors) {
+        if (!isEmpty(nextProps.errors)) {
             const { errors } = nextProps;
             M.toast({
                 html: 'Invalid username or password!',
                 classes: 'toast-invalid'
             });
             this.setState({
-                errors: errors
+                errors
             });
             
             if (errors.username && errors.username.toLowerCase() === 'User not found!'.toLowerCase()) {
@@ -37,6 +39,10 @@ class Login extends Component {
             } else if (errors.password && errors.password.toLowerCase() === 'Incorrect password!'.toLowerCase()) {
                 password.focus();
             }
+        }
+
+        if (nextProps.auth.authenticated) {
+            this.props.history.push('/dashboard');
         }
     }
 
@@ -59,10 +65,10 @@ class Login extends Component {
         const { errors } = this.state;
         return (
             <Fragment>
-                <Helmet><title>Instaquiz - Login</title></Helmet>
+                <Helmet><title>Login User - Instaquiz</title></Helmet>
                 <section className="login-container">
                     <div className="form-container">
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.handleSubmit} noValidate>
                             <h3>Welcome!</h3>
                             <h4>Login to Continue</h4>
                             <p>
@@ -105,10 +111,12 @@ class Login extends Component {
 }
 
 Login.propTypes = {
+    auth: PropTypes.object.isRequired,
     errors: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({
+    auth: state.auth,
     errors: state.errors
 });
 

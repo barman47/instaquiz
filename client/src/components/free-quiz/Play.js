@@ -64,7 +64,7 @@ class Play extends Component {
                 loading: false
             }, () => {
                 this.displayQuestion(this.state.questions);
-                this.handleDisableButton();
+                this.handleDisableButton(); 
             });
         }
     }

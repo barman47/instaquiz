@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
@@ -12,6 +12,9 @@ import Register from './components/auth/Register';
 import Play from './components/free-quiz/Play';
 import FreeGameInstructions from './components/free-quiz/FreeGameInstructions';
 import QuizSummary from './components/free-quiz/QuizSummary';
+import Dashboard from './components/users/Dashboard';
+
+import PrivateRoute from './components/common/PrivateRoute'; 
 
 import store from './store';
 import setAuthToken from './utils/setAuthToken';
@@ -47,6 +50,9 @@ class App extends Component {
 							<Route path="/play" exact component={Play} />
 							<Route path="/play/instructions" exact component={FreeGameInstructions} />
 							<Route path="/play/quizSummary" exact component={QuizSummary} />
+							<Switch>
+								<PrivateRoute path="/dashboard" exact component={Dashboard} />
+							</Switch>
 							<Footer />
 						</Fragment>
 					</ScrollToTop>

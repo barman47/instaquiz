@@ -4,16 +4,16 @@ import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER } from './types';
 import M from 'materialize-css';
 import setAuthToken from '../utils/setAuthToken';
 export const loginUser = (user) => (dispatch) => {
+    dispatch({
+        type: CLEAR_ERRORS,
+        payload: {}
+    });
     axios.post('/api/users/login', user)
         .then(res => {
-            // dispatch({
-            //     type: CLEAR_ERRORS,
-            //     payload: {}
-            // });
             M.toast({
-                html: 'Login Successful!'
+                html: 'Logged in successfuly',
+                classes: 'toast-valid'
             });
-            // console.log(res.data);
 
             // Save token to local storage
             const { token } = res.data;

@@ -25,10 +25,10 @@ class Register extends Component {
     }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
-        console.log(nextProps);
         if (!isEmpty(nextProps.errors)) {
             M.toast({
-                html: 'Invalid input data!'
+                html: 'Invalid input data!',
+                classes: 'toast-invalid'
             });
             this.setState({
                 errors: nextProps.errors
@@ -36,7 +36,7 @@ class Register extends Component {
         } else {
             M.toast({
                 html: 'Signup successful!',
-                classes: 'success-toast',
+                classes: 'toast-valid',
                 displayLength: 5000,
                 completeCallback: () => {
                     this.props.history.push('/login');
@@ -80,7 +80,7 @@ class Register extends Component {
         const { errors } = this.state;
         return (
             <Fragment>
-                <Helmet><title>Instaquiz - Register</title></Helmet>
+                <Helmet><title>Register User - Instaquiz</title></Helmet>
                 <section className="signup-container">
                     <div className="form-container">
                         <form id="registerForm" onSubmit={this.handleSubmit}>

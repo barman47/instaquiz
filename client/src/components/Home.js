@@ -1,18 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-// import { connect } from 'react-redux';
-
-// import { getFreeQuestions } from '../actions/quizActions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class Home extends Component {
 
-    // componentDidMount () {
-    //     this.props.getFreeQuestions();
-    // }
-
-    handlePlayButtonClick = () => {
-        this.props.history.push('/');
+    componentDidMount () {
+        if (this.props.auth.authenticated) {
+            this.props.history.push('/dashboard');
+        }
     }
 
     render () {
@@ -43,8 +40,12 @@ class Home extends Component {
     }
 }
 
-// const mapStateToProps = (state) => ({
-//     quiz: state.quiz
-// });
+Home.propTypes = {
+    auth: PropTypes.object.isRequired
+};
 
-export default Home;
+const mapStateToProps = (state) => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps)(Home);

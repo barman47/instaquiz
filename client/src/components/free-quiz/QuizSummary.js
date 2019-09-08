@@ -46,15 +46,16 @@ class QuizSummary extends Component {
         const score = this.props.quiz.quizStats;
         const userScore = this.state.score;
         let remark;
-
-        if (userScore <= 50) {
+        if (userScore <= 30) {
+            remark = 'You need more practice';
+        } else if (userScore > 30 && userScore <= 50) {
             remark = 'Better luck next time';
         } else if (userScore <= 70 && userScore > 50) {
             remark = 'You can do better';
         } else if (userScore >= 71 && userScore <= 84) {
             remark = 'You did great!'
         } else {
-            remark = 'You\'re a genius!'
+            remark = 'You\'re an absolute genius!'
         }
         
         let stats;
@@ -71,7 +72,7 @@ class QuizSummary extends Component {
                         <h4>{remark}</h4>
                         <h2 className={classnames('perfect-score', {
                             'perfect-score': this.state.score > 85
-                        })}>Your Score: {this.state.score}&#37;</h2>
+                        })}>Your Score: {this.state.score.toFixed(0)}&#37;</h2>
                         <span className="stat left">Total Number of Questions: </span><span className="right">{this.state.numberOfQuestions}</span><br />
                         <span className="stat left">Number of attempted questions: </span><span className="right">{this.state.numberOfAnsweredQuestions}</span><br />
                         <span className="stat left">Number of Correct Answers: </span><span className="right">{this.state.correctAnswers}</span><br />

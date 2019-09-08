@@ -28,7 +28,7 @@ const TextInputGroup = ({
             />
             <label htmlFor={id}>{label}</label>
             {info ? (<span className="helper-text">{info}</span>) : null}
-            {errorMessage ? (<span className="helper-text invalid">{errorMessage}</span>) : null}
+            {errorMessage ? (<span className="helper-text invalid-text">{errorMessage}</span>) : null}
         </div>
     </div>
 );

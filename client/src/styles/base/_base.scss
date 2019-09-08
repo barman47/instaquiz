@@ -10,7 +10,7 @@ body {
     font-family: $quicksand;
 }
 
-.valid {
+.valid-text {
     color: $green;
 }
 
@@ -18,7 +18,7 @@ body {
     color: $orange !important;
 }
 
-.invalid {
+.invalid-text {
     color: $error-text !important;
 }
 
