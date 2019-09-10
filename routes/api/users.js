@@ -40,10 +40,10 @@ router.post('/register', (req, res) => {
                     } 
 
                     const userData = new User({
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
+                        firstName: req.body.firstName.toUpperCase(),
+                        lastName: req.body.lastName.toUpperCase(),
                         username: req.body.username,
-                        email: req.body.email,
+                        email: req.body.email.toLowerCase(),
                         password: req.body.password
                     });
                 
@@ -101,24 +101,37 @@ router.post('/login', (req, res) => {
             bcrypt.compare(password, user.password)
                 .then(isMatch => {
                     if (isMatch) {
-                        // User matched
-                        const payload = {
-                            id: user.id,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
-                            username: user.username,
-                            email: user.email,
-                            lastSeen: user.lastSeen,
-                            createdAt: user.createAt
-                        }; // JWT Payload
-
-                        // Sign the token
-                        jwt.sign(payload, keys.secretOrKey, { expiresIn: 3600 }, (err, token) => {
-                            res.json({
-                                success: true,
-                                token: `Bearer ${token}`
-                            });
-                        });
+                        Profile.findOne({ user: user.id })
+                            .then(profile => {
+                                const payload = {
+                                    id: user.id,
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    username: user.username,
+                                    email: user.email,
+                                    lastSeen: user.lastSeen,
+                                    createdAt: user.createAt,
+                                    phone: profile.phone,
+                                    balance: profile.balance,
+                                    totalEarnings: profile.totalEarnings,
+                                    gamesPlayed: profile.gamesPlayed,
+                                    rank: profile.rank,
+                                    wins: profile.wins,
+                                    losses: profile.losses,
+                                    bank: profile.bank,
+                                    accountName: profile.accountName,
+                                    accountNumber: profile.accountNumber
+                                }; // JWT Payload
+        
+                                // Sign the token
+                                jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
+                                    res.json({
+                                        success: true,
+                                        token: `Bearer ${token}`
+                                    });
+                                });
+                            })
+                            .catch(err => console.log(err));
                     } else {
                         errors.password = 'Password incorrect!';
                         return res.status(401).json(errors)
@@ -129,7 +142,7 @@ router.post('/login', (req, res) => {
         .catch(err => {});
 });
 
-// Register change password
+// Change password
 // @route POST /api/users/changePassword
 // @desc change user password
 // @access Public
@@ -159,7 +172,6 @@ router.put('/changePassword', passport.authenticate('jwt', { session: false }), 
                                     bcrypt.compare(newPassword, user.password)
                                         .then(isMatch => {
                                             if (isMatch) {
-                                                console.log('match');
                                                 errors.newPassword = 'New password cannot be the same with the current password';
                                                 return res.status(403).json(errors);
                                             } else {

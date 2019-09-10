@@ -12,7 +12,7 @@ import Register from './components/auth/Register';
 import Play from './components/free-quiz/Play';
 import FreeGameInstructions from './components/free-quiz/FreeGameInstructions';
 import QuizSummary from './components/free-quiz/QuizSummary';
-import Dashboard from './components/users/Dashboard';
+import Dashboard from './components/user/Dashboard';
 
 import PrivateRoute from './components/common/PrivateRoute'; 
 

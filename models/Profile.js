@@ -16,10 +16,10 @@ const ProfileSchema = new Schema({
         default: 100
     },
 
-    hints: {
-        type: Number,
-        default: 5
-    },
+    // hints: {
+    //     type: Number,
+    //     default: 5
+    // },
 
     totalEarnings: {
         type: Number,
@@ -31,12 +31,27 @@ const ProfileSchema = new Schema({
         default: 0
     },
 
+    rank: {
+        type: String,
+        default: 'Novice'
+    },
+
+    wins: {
+        type: Number,
+        default: 0,
+    },
+
+    losses: {
+        type: Number,
+        default: 0
+    },
+
     bank: {
         type: String
     },
 
     accountNumber: {
-        type: Number
+        type: String
     },
 
     accountName: {

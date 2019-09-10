@@ -1,0 +1,298 @@
+.dashboard {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    // column-gap: 1rem;
+
+    .aside {
+        background: linear-gradient(to bottom, darken($blue, 20%), darken($blue, 35%), darken($blue, 50%));
+        color: $off-white;
+
+        .avatar-section p {
+            background-color: darken($off-white, 15%);
+            border-radius: 50%;
+            width: $xxlg;
+            height: $xxlg;
+            text-align: center;
+            margin: $md auto;
+        }
+
+        .avatar-section .avatar-icon {
+            font-size: 5rem;           
+        }
+
+        .avatar-section h5 {
+            font-size: $normal;
+            text-align: center;
+        }
+
+        ul li {
+            padding: $xs $sm;
+            width: 100%;
+        }
+
+        ul li:hover {
+            background-color: darken($blue, 40%);
+
+        }
+
+        ul li a {
+            color: darken($off-white, 20%);
+        }
+
+        ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .link-icon {
+            position: relative; 
+            right: 10px;
+            top: 3px;
+        }
+    }
+
+    .main {
+        background-color: $off-white;
+    }
+
+    .main__top {
+        background-color: #fff;
+        width: 100%;
+        padding-top: $sm;
+
+        h4 {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .initials-container {
+            display: flex;
+            justify-content: space-between;
+
+            .sidenav {
+                background: linear-gradient(to bottom, darken($blue, 20%), darken($blue, 35%), darken($blue, 50%));
+                color: $off-white;
+
+                .avatar-section {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0;
+                    margin: 0;
+
+                    h5 {
+                        font-size: $sm;
+                        padding: $xs;
+                        text-align: center;
+                        width: 100%;
+                    }
+                }
+
+                p:first-child {
+                    background-color: darken($off-white, 15%);
+                    border-radius: 50%;
+                    width: $xxlg;
+                    height: $xxlg;
+                    text-align: center;
+                    margin: $md auto;
+                }
+        
+                .avatar-section .avatar-icon {
+                    font-size: 5rem;           
+                }
+        
+                h5:first-child {
+                    font-size: $normal;
+                    text-align: center;
+                }
+
+                ul li {
+                    padding: $xs $sm;
+                    width: 100%;
+                }
+        
+                ul li:hover {
+                    background-color: darken($blue, 40%);
+        
+                }
+        
+                ul li a, li > a {
+                    color: darken($off-white, 20%);
+                }
+        
+                ul li a:hover, li > a:hover {
+                    text-decoration: underline;
+                }
+        
+                .link-icon {
+                    position: relative; 
+                    right: 10px;
+                    top: 3px;
+                }
+            }
+
+            h4 {
+                color: lighten($off-black, 20%);
+                margin-left: $sm;
+            }
+
+            #logo {
+                display: none;
+            }
+
+            .menu-icon {
+                display: none;
+            }
+
+            div {
+                display: flex;
+                justify-content: space-between;
+                margin-right: $md;
+                padding-bottom: $sm;
+
+                button {
+                    color: $off-black;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    margin-right: $normal;
+
+                    .logout-icon {
+                        color: lighten($off-black, 30%);
+                        position: relative;
+                        top: 3px;
+                    }
+                }
+
+                p {
+                    background-color: $blue;
+                    color: $off-white;
+                    display: flex;
+                    border-radius: 50%;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: $sm;
+                    font-weight: bold;
+                    width: $lg;
+                    height: $lg;
+                }
+            }
+        }
+    }
+
+    .main__header {
+        background-color: rgba(29, 161, 242, 0.2);
+        color: $blue;
+        width: 100%;
+        padding: $normal $md;
+
+        h1 {
+            margin: 0;
+        }
+    }
+
+    .stat-content {
+        background-color: #fff;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: $lg;
+        row-gap: $lg;
+        padding: $md;
+        width: 100%;
+
+        .stat {
+            color: darken($blue, 10%);
+            cursor: pointer;
+            border-radius: 5px; 
+            border-bottom: 4px solid darken($blue, 10%); 
+            box-shadow: $shadow;
+            padding: $sm;
+            transition: 0.3s linear all;
+
+            h4 {
+                font-weight: lighter;
+            }
+
+            h5 {
+                font-weight: bold;
+            }
+
+            .stat-icon-primary {
+                color: darken($off-white, 40%);
+                float: right;
+                font-size: $xlg;
+            }
+
+            .balance {
+                color: $orange;
+            }
+
+            .total-earnings {
+                color: $success-text;
+            }
+
+            .games-played {
+                color: #951095;
+            }
+
+            .rank {
+                color: #debb00;
+            }
+
+            .wins {
+                color: $blue;
+            }
+
+            .losses {
+                color: $error-text;
+            }
+        }
+
+        .stat:hover {
+            box-shadow: 0 2px 20px 0 rgba(0,0,0,0.14), 0 3px 20px -2px rgba(0,0,0,0.12), 0 1px 20px 0 rgba(0,0,0,0.2);
+        }
+    }
+}
+
+@media (max-width: $lg-breakpoint) {
+    .dashboard {
+        grid-template-columns: 2fr 5fr;
+    }
+    .stat-content {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .initials-container h4 {
+        font-size: $sm;
+    }
+}
+
+@media (max-width: $sm-breakpoint) {
+    .dashboard {
+        grid-template-columns: 1fr !important;
+    }
+
+    .initials-container #logo {
+        display: block !important;
+    }
+
+    .initials-container h4:first-child {
+        display: none;
+    }
+
+    .aside {
+        display: none;
+        position: absolute;
+        height: 100vh;
+    }
+
+    .stat-content {
+        grid-template-columns: 1fr !important;
+    }
+
+    .menu-icon {
+        display: block !important;
+        margin-right: 10px;
+    }
+}
