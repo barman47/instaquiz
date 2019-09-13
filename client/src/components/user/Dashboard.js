@@ -22,15 +22,26 @@ class Dashboard extends Component {
             losses: 0,
             bank: '',
             accountName: '',
-            accountNumber: ''
+            accountNumber: '',
+            colors: [
+                '#c2185b',
+                '#0097a8',
+                '#028879',
+                '#f06d03',
+                '#bd350a',
+                '#781fa1',
+                '#64a138',
+                '#5e4236',
+                '#77919d',
+                '#ac47bb'
+            ],
+            color: '',
+            rankColor: [
+                '#d2d2d2',
+                '57b846',
+                '#debb00'
+            ]
         };
-    }
-
-    UNSAFE_componentWillReceiveProps (nextProps) {
-        if (nextProps.auth.user) {
-            console.log('nextprops');
-            
-        }
     }
 
     componentDidMount () {
@@ -54,13 +65,30 @@ class Dashboard extends Component {
             accountName: user.accountName,
             accountNumber: user.accountNumber
         });
+
+        let color = Math.floor(Math.random() * 10);
+        color = this.state.colors[color];
+        this.setState({ color });
     }
+
+    greetUser = () => {
+        const time = new Date();
+        const hour = time.getHours();
+        if (hour < 12) {
+            return '`Hello, top of the morning to you!`;';
+        } else if (hour >= 12 && hour < 16) {
+            return 'Good afternoon, so nice having you back.';
+        } else {
+            return 'Good evening, hope you had an awesome day?';
+        }
+    };
 
     handleLogoutUser = () => {
         this.props.logoutUser();
     };
 
     render () {
+        const { color } = this.state;
         return (
             <Fragment>
                 <Helmet><title>Dashboard - {this.state.firstName} {this.state.lastName} - Instaquiz</title></Helmet>
@@ -75,9 +103,9 @@ class Dashboard extends Component {
                         </div>
                         <ul>
                             <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
-                            <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
+                            <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                             <li><Link to="/"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
-                            <li><Link to="/"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
+                            <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
                             <li><Link to="/"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                             <li><Link to="/"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Payment Details</Link></li>
                         </ul>
@@ -85,8 +113,8 @@ class Dashboard extends Component {
                     <section className="main">
                         <div className="main__top">
                             <div className="initials-container">
-                                <h4>Good to have you back!</h4>
-                                <h4 className="show-on-small" id="logo"><span data-target="mobile-menu" className="mdi mdi-menu sidenav-trigger left menu-icon"></span>Logo</h4>
+                                <h4 style={{ color }}>{this.greetUser()}</h4>
+                                <h4 className="show-on-small" id="logo"><span data-target="mobile-menu" className="mdi mdi-menu mdi-24px sidenav-trigger left menu-icon"></span>Logo</h4>
                                 <ul className="sidenav" id="mobile-menu">
                                     <h5>AppName or Logo</h5>
                                     <div className="avatar-section">
@@ -95,19 +123,24 @@ class Dashboard extends Component {
                                         </p>
                                         <h5 style={{ textTransform: 'capitalize' }}>{this.state.firstName} {this.state.lastName}</h5>
                                     </div>
-                                    <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>  
-                                    <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
+                                    <li className="divider"></li>  
+                                    <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
+                                    <br/>
+                                    <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                                     <li><Link to="/"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
-                                    <li><Link to="/"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
+                                    <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
                                     <li><Link to="/"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                                     <li><Link to="/"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Payment Details</Link></li>
+                                    <br/>
+                                    <li className="divider"></li>
+                                    <li><Link to="/"><span style={{ color: '#ea4335' }} className="mdi mdi-power mdi-24px link-icon logout-icon"></span>Log out</Link></li>
                                 </ul>
                                 <div>
-                                    <button onClick={this.handleLogoutUser}>
+                                    <button id="logoutButton" onClick={this.handleLogoutUser}>
                                         Logout
                                         <span className="mdi mdi-power mdi-24px logout-icon"></span>
                                     </button>
-                                    <p className="initials">{this.state.firstName.charAt(0).toUpperCase()}</p>
+                                    <p style={{ backgroundColor: color }} className="initials">{this.state.firstName.charAt(0).toUpperCase()}</p>
                                 </div>
                             </div>
                         </div>
@@ -116,6 +149,7 @@ class Dashboard extends Component {
                             <h5>Account Overview</h5>
                         </div>
                         <section className="main-content">
+                            <h4 style={{ color }} id="greeting">{this.greetUser()}</h4>
                             <div className="stat-content">
                                 <div className="stat">
                                     <h5>

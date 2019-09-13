@@ -6,6 +6,11 @@
     grid-template-columns: 1fr 5fr;
     // column-gap: 1rem;
 
+    li.dashboard-active {
+        background-color: darken($blue, 40%) !important;
+        border-left: 2px solid $off-white;
+    }
+
     .aside {
         background: linear-gradient(to bottom, darken($blue, 20%), darken($blue, 35%), darken($blue, 50%));
         color: $off-white;
@@ -74,6 +79,7 @@
             .sidenav {
                 background: linear-gradient(to bottom, darken($blue, 20%), darken($blue, 35%), darken($blue, 50%));
                 color: $off-white;
+                width: 60vw;
 
                 .avatar-section {
                     display: flex;
@@ -132,9 +138,11 @@
                 }
             }
 
-            h4 {
-                color: lighten($off-black, 20%);
+            h4:first-child {
+                color: $green;
+                font-size: 1.3rem;
                 margin-left: $sm;
+                margin-top: $normal;
             }
 
             #logo {
@@ -166,7 +174,6 @@
                 }
 
                 p {
-                    background-color: $blue;
                     color: $off-white;
                     display: flex;
                     border-radius: 50%;
@@ -180,6 +187,13 @@
             }
         }
     }
+
+    #greeting {
+        display: none;
+        font-size: $normal;
+        text-align: center;
+    }
+
 
     .main__header {
         background-color: rgba(29, 161, 242, 0.2);
@@ -273,11 +287,56 @@
         grid-template-columns: 1fr !important;
     }
 
+    #greeting {
+        display: block !important;
+    }
+
     .initials-container #logo {
         display: block !important;
     }
 
     .initials-container h4:first-child {
+        display: none;
+    }
+
+    .initials-container #logoutButton {
+        display: none;
+    }
+
+    .aside {
+        display: none;
+        position: absolute;
+        height: 100vh;
+    }
+
+    .stat-content {
+        grid-template-columns: 1fr !important;
+    }
+
+    .menu-icon {
+        display: block !important;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: $xs-breakpoint) {
+    .dashboard {
+        grid-template-columns: 1fr !important;
+    }
+
+    .initials-container #logo {
+        display: block !important;
+    }
+
+    #greeting {
+        display: block !important;
+    }
+
+    .initials-container h4:first-child {
+        display: none;
+    }
+
+    .initials-container #logoutButton {
         display: none;
     }
 

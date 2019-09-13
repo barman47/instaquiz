@@ -33,7 +33,12 @@ const ProfileSchema = new Schema({
 
     rank: {
         type: String,
-        default: 'Novice'
+        default: 'Amateur'
+    },
+
+    rankPercentage: {
+        type: Number,
+        default: 0
     },
 
     wins: {

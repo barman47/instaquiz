@@ -63,6 +63,7 @@ export const registerUser = (user) => (dispatch) => {
             });
         })
         .catch(err => {
+            console.log(err);
             switch (err.response.status) {
                 case 500:
                     const error = {
