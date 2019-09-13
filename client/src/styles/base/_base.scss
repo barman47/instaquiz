@@ -91,3 +91,13 @@ button.disable {
     box-shadow: none !important;
     opacity: 0.9 !important;
 }
+
+.spinner-icon {
+    border: 1px solid red;
+    width: 10px;
+    height: 10px;
+}
+
+.disable {
+    pointer-events: none !important;
+}

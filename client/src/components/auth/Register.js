@@ -9,6 +9,7 @@ import { registerUser } from '../../actions/authActions';
 import isEmpty from '../../validation/is-empty';
 
 import TextInputGroup from '../input-groups/TextInputGroup';
+import SpinnerComponent from '../common/SpinnerComponent';
 
 class Register extends Component {
     constructor (props) {
@@ -20,19 +21,32 @@ class Register extends Component {
             email: '',
             password: '',
             confirmPassword: '',
+            loading: false,
             errors: {}
         };
     }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (!isEmpty(nextProps.errors)) {
-            M.toast({
-                html: 'Invalid input data!',
-                classes: 'toast-invalid'
-            });
-            this.setState({
-                errors: nextProps.errors
-            });
+            const { errors } = nextProps;
+            if (errors.message) {
+                M.toast({
+                    html: errors.message,
+                    classes: 'toast-invalid'
+                });
+                this.setState({
+                    loading: false
+                });
+            } else {
+                M.toast({
+                    html: 'Invalid input data!',
+                    classes: 'toast-invalid'
+                });
+                this.setState({
+                    errors: nextProps.errors,
+                    loading: false
+                });
+            }
         } else {
             M.toast({
                 html: 'Signup successful!',
@@ -51,6 +65,7 @@ class Register extends Component {
                 email: '',
                 password: '',
                 confirmPassword: '',
+                loading: false,
                 errors: {}
             });
         }
@@ -72,8 +87,10 @@ class Register extends Component {
             password: this.state.password,
             confirmPassword: this.state.confirmPassword
         };
-
         this.props.registerUser(user);
+        this.setState({
+            loading: true
+        });
     }
 
     render () {
@@ -162,6 +179,7 @@ class Register extends Component {
                         </form>
                     </div>
                 </section>
+                <SpinnerComponent loading={this.state.loading} text="Please wait . . ." />
             </Fragment>
         );
     }
