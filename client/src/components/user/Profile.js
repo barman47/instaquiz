@@ -2,13 +2,28 @@ import React, { Component, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import M from 'materialize-css';
+
+import { changePassword, logoutUser, updateUserData } from '../../actions/authActions';
+import ProfileTextInput from '../input-groups/ProfileTextInput';
 
 class Profile extends Component {
     constructor (props) {
         super(props);
         this.state = {
             user: this.props.auth.user,
-            color: this.props.auth.color
+            firstName: this.props.auth.user.firstName || '',
+            lastName: this.props.auth.user.lastName || '',
+            username: this.props.auth.user.username || '',
+            email: this.props.auth.user.email || '',
+            phone: this.props.auth.user.phone || '',
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+            color: this.props.auth.color,
+            loading: false,
+            errors: {}
         };
     }
 
@@ -23,6 +38,33 @@ class Profile extends Component {
         // eslint-disable-next-line
         const sidenavInstance = M.Sidenav.init(sidenavElem, {});
         sidenavInstance[0].close();        
+    }
+
+    UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.errors) {
+            this.setState({
+                errors: nextProps.errors,
+                loading: false
+            });
+        }
+
+        if (nextProps.auth.msg) {
+            M.toast({
+                html: nextProps.auth.msg.success,
+                classes: 'toast-valid',
+                completeCallback: () => {
+                    this.setState({
+                        errors: {},
+                        currentPassword: '',
+                        newPassword: '',
+                        confirmPassword: '',
+                        loading: false
+                    }, () => {
+                        document.getElementById('change-password-form').reset();
+                    });
+                }
+            });
+        }
     }
 
     greetUser = () => {
@@ -41,12 +83,53 @@ class Profile extends Component {
         this.props.logoutUser();
     };
 
+    onChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { state } = this;
+        let data;
+        switch (e.target.id) {
+            case 'profile-form':
+                data = {
+                    firstName: state.firstName,
+                    lastName: state.lastName,
+                    email: state.email,
+                    phone: state.phone
+                };
+                this.setState({
+                    loading: true
+                });
+                this.props.updateUserData(data);
+                break;
+
+            case 'change-password-form':
+                data = {
+                    currentPassword: state.currentPassword,
+                    newPassword: state.newPassword,
+                    confirmPassword: state.confirmPassword
+                };
+                this.setState({
+                    loading: true
+                });
+                this.props.changePassword(data);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render () {
-        const { user } = this.state;
-        const { color } = this.state;
+        const { color, user, errors } = this.state;
+        const { state } = this;
         return (
             <Fragment>
-                <Helmet><title></title></Helmet>
+                <Helmet><title>Dashboard - Instaquiz</title></Helmet>
                 <div className="dashboard">
                     <section className="aside">
                         <h5>AppName or Logo</h5>
@@ -57,7 +140,6 @@ class Profile extends Component {
                             <h5 style={{ textTransform: 'capitalize' }}>{user.firstName} {user.lastName}</h5>
                         </div>
                         <ul>
-                            <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                             <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                             <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                             <li className="profile-active"><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
@@ -76,10 +158,9 @@ class Profile extends Component {
                                         <p>
                                             <span className="mdi mdi-account avatar-icon"></span>
                                         </p>
-                                        <h5 style={{ textTransform: 'capitalize' }}>{this.state.firstName} {this.state.lastName}</h5>
+                                        <h5 style={{ textTransform: 'capitalize' }}>{user.firstName} {user.lastName}</h5>
                                     </div>
                                     <li className="divider"></li>  
-                                    <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                                     <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                                     <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                                     <li className="dashboard-active"><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
@@ -102,9 +183,114 @@ class Profile extends Component {
                             <h5>View and Edit User Info</h5>
                         </div>
                         <section className="main-content">
-                            <h4 style={{ color }} id="greeting">{this.greetUser()}</h4>
                             <div className="profile-content">
-                                <h1>Profile Content</h1>
+                                <form onSubmit={this.handleSubmit} id="profile-form" className="profile-form">
+                                    <h5>Personal Information</h5>
+                                    <ProfileTextInput
+                                        icon="mdi mdi-account prefix"
+                                        id="firstName"
+                                        name="firstName"
+                                        value={state.firstName}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="First Name"
+                                        title="First name is required"                                        
+                                        errorMessage={errors.firstName}
+                                    />
+                                    <ProfileTextInput
+                                        icon="mdi mdi-account prefix"
+                                        id="lastName"
+                                        name="lastName"
+                                        value={state.lastName}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Last Name"
+                                        title="Last name is required"
+                                        errorMessage={errors.lastName}
+                                    />
+                                    {/* <ProfileTextInput
+                                        icon="mdi mdi-alphabetical prefix"
+                                        id="username"
+                                        name="username"
+                                        value={state.username}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Username"
+                                        info="Test info"
+                                        title="username is required"
+                                        errorMessage={errors.username}
+                                    /> */}
+                                    <ProfileTextInput
+                                        icon="mdi mdi-email-outline prefix"
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={state.email}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Email Address"
+                                        title="email is required"
+                                        info="email@example.com"
+                                        errorMessage={errors.email}
+                                    />
+                                    <ProfileTextInput
+                                        icon="mdi mdi-cellphone-android prefix"
+                                        id="phone"
+                                        name="phone"
+                                        value={state.phone}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder={state.phone === '' ? 'Enter Phone Number' : state.phone}
+                                        title="Phone number is required"
+                                        info="e.g. 08012345678"
+                                        errorMessage={errors.phone}
+                                    />
+                                    <div>
+                                        <button type="submit" id="edit-info-button">Edit Personal Information</button>
+                                    </div>
+                                </form>
+                                <form onSubmit={this.handleSubmit} id="change-password-form" className="profile-form">
+                                    <h5>Change Password</h5>
+                                    <ProfileTextInput
+                                        type="password"
+                                        icon="mdi mdi-lock-outline prefix"
+                                        id="currentPassword"
+                                        name="currentPassword"
+                                        value={state.currentPassword}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Current Password"
+                                        title="Current password is required"                                        
+                                        errorMessage={errors.currentPassword}
+                                    />
+                                    <ProfileTextInput
+                                        type="password"
+                                        icon="mdi mdi-lock-outline prefix"
+                                        id="newPassword"
+                                        name="newPassword"
+                                        value={state.newPassword}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="New Password"
+                                        title="New Password is required"                                        
+                                        errorMessage={errors.newPassword}
+                                    />
+                                    <ProfileTextInput
+                                        type="password"
+                                        icon="mdi mdi-lock-outline prefix"
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        value={state.confirmPassword}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Confirm Password Password"
+                                        title="Confirm password is required"                                        
+                                        errorMessage={errors.confirmPassword}
+                                    />
+                                    <div>
+                                        <button type="submit" id="change-password-button">Change Password</button>
+                                    </div>
+                                </form>
                             </div>
                         </section>
                         <div><p>&copy; Copyright Instaquiz 2019</p></div>
@@ -115,8 +301,15 @@ class Profile extends Component {
     }
 }
 
+Profile.propTypes = {
+    changePassword: PropTypes.func.isRequired,
+    logoutUser: PropTypes.func.isRequired,
+    updateUserData: PropTypes.func.isRequired
+}
+
 const mapStateToProps = (state) => ({
-    auth: state.auth
+    auth: state.auth,
+    errors: state.errors
 });
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, { changePassword, logoutUser, updateUserData })(Profile);

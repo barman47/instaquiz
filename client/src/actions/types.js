@@ -7,3 +7,4 @@ export const SET_QUIZ_LOADING = 'SET_QUIZ_LOADING';
 export const END_FREE_QUIZ = 'END_FREE_QUIZ';
 export const CLEAR_QUIZ_STATS = 'CLEAR_QUIZ_STATS';
 export const SET_USER_COLOR = 'SET_USER_COLOR';
+export const REQUEST_SUCCESS = 'REQUEST_SUCCESS';

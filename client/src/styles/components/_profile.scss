@@ -1,0 +1,62 @@
+.profile-content {
+    padding: $sm 0;
+
+    .profile-form {
+        background-color: #fff;
+        border-radius: 5px;
+        font-family: $quicksand;
+        margin: $md auto $xxlg auto;
+        padding: $sm;
+        width: 80%;
+
+        input {
+            font-family: $quicksand;
+        }
+
+        h5 {
+            text-align: center;
+            color: $blue;
+            font-weight: lighter;
+        }
+
+        button {
+            border: none;
+            border-radius: 30px;
+            box-shadow: $shadow;
+            color: $off-white;
+            cursor: pointer;
+            font-family: $quicksand;
+            padding: $normal;
+            transition: 0.3s linear all;
+        }
+
+        button:hover {
+            box-shadow: none;
+        }
+
+        #edit-info-button {
+            background-color: $success-text;
+        }
+        #edit-info-button:hover {
+            background-color: darken($success-text, 10%);
+        }
+
+        #change-password-button {
+            background-color: $red;
+        }
+        #change-password-button:hover {
+            background-color: darken($red, 10%);
+        }
+    }
+}
+
+@media (max-width: $md-breakpoint) {
+    .profile-form {
+        margin-bottom: $xs !important;
+        width: 90% !important;
+    }
+
+    .profile-form button {
+        width: 100%;
+    }
+}

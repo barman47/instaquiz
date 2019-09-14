@@ -175,10 +175,9 @@ router.put('/changePassword', passport.authenticate('jwt', { session: false }), 
                                                 errors.newPassword = 'New password cannot be the same with the current password';
                                                 return res.status(403).json(errors);
                                             } else {
-                                                console.log('no match!');
                                                 user.password = hash;
                                                 user.save()
-                                                    .then(updatedUser => res.json({ success: 'Password changed successfully!' }))
+                                                    .then(() => res.json({ success: 'Password changed successfully!' }))
                                                     .catch(err => console.log(err));
                                             }
                                         })
@@ -186,7 +185,7 @@ router.put('/changePassword', passport.authenticate('jwt', { session: false }), 
                                 });
                             });
                         } else {
-                            errors.password = 'Incorrect Password!';
+                            errors.currentPassword = 'Incorrect Password!';
                             return res.status(401).json(errors);
                         }
                     })
@@ -210,7 +209,8 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
     const userData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        email: req.body.email
+        email: req.body.email, 
+        phone: req.body.phone
     };
 
     User.findOne({ _id: req.user.id })

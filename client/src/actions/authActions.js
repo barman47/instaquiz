@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR } from './types';
+import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR, REQUEST_SUCCESS } from './types';
 import M from 'materialize-css';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -87,6 +87,56 @@ export const registerUser = (user) => (dispatch) => {
                         payload: err.response.data
                     });
                     break;
+            }
+        });
+};
+
+export const updateUserData = (userData) => (dispatch) => {
+    axios.put('/api/users/updateData', userData)
+        .then(res => {
+            dispatch({
+                type: REQUEST_SUCCESS,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            try {
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                });
+            } catch (err) {
+                dispatch({
+                    type: GET_ERRORS
+                });
+                M.toast({
+                    html: 'Error! Please retry.',
+                    classes: 'toast-invalid'
+                });
+            }
+        });
+};
+
+export const changePassword = (data) => (dispatch) => {
+    axios.put('/api/users/changePassword', data)
+        .then(res => dispatch({
+            type: REQUEST_SUCCESS,
+            payload: res.data
+        }))
+        .catch(err => {
+            try {
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                });
+            } catch (err) {
+                dispatch({
+                    type: GET_ERRORS
+                });
+                M.toast({
+                    html: 'Error! Please retry.',
+                    classes: 'toast-invalid'
+                });
             }
         });
 };

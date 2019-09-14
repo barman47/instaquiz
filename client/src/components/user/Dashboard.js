@@ -118,7 +118,6 @@ class Dashboard extends Component {
                             <h5 style={{ textTransform: 'capitalize' }}>{this.state.firstName} {this.state.lastName}</h5>
                         </div>
                         <ul>
-                            <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                             <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                             <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                             <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
@@ -140,7 +139,6 @@ class Dashboard extends Component {
                                         <h5 style={{ textTransform: 'capitalize' }}>{this.state.firstName} {this.state.lastName}</h5>
                                     </div>
                                     <li className="divider"></li>  
-                                    <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                                     <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                                     <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                                     <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>

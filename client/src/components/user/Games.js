@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+import { logoutUser } from '../../actions/authActions';
 
 class Games extends Component {
     constructor (props) {
@@ -46,7 +49,7 @@ class Games extends Component {
         const { color } = this.state;
         return (
             <Fragment>
-                <Helmet><title></title></Helmet>
+                <Helmet><title>Dashboard - Instaquiz</title></Helmet>
                 <div className="dashboard">
                     <section className="aside">
                         <h5>AppName or Logo</h5>
@@ -57,7 +60,6 @@ class Games extends Component {
                             <h5 style={{ textTransform: 'capitalize' }}>{user.firstName} {user.lastName}</h5>
                         </div>
                         <ul>
-                            <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                             <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                             <li className="games-active"><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                             <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
@@ -76,10 +78,9 @@ class Games extends Component {
                                         <p>
                                             <span className="mdi mdi-account avatar-icon"></span>
                                         </p>
-                                        <h5 style={{ textTransform: 'capitalize' }}>{this.state.firstName} {this.state.lastName}</h5>
+                                        <h5 style={{ textTransform: 'capitalize' }}>{user.firstName} {user.lastName}</h5>
                                     </div>
                                     <li className="divider"></li>  
-                                    <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                                     <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                                     <li className="games-active"><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                                     <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
@@ -102,7 +103,6 @@ class Games extends Component {
                             <h5>Select and play games</h5>
                         </div>
                         <section className="main-content">
-                            <h4 style={{ color }} id="greeting">{this.greetUser()}</h4>
                             <div className="games-content">
                                 <h1>Games Content</h1>
                             </div>
@@ -115,8 +115,12 @@ class Games extends Component {
     }
 }
 
+Games.propTypes = {
+    logoutUser: PropTypes.func.isRequired
+};
+
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps)(Games);
+export default connect(mapStateToProps, { logoutUser })(Games);

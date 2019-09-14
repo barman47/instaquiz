@@ -8,16 +8,6 @@ module.exports = (data) => {
     data.bank = !isEmpty(data.bank) ?  data.bank : '';
     data.accountName = !isEmpty(data.accountName) ?  data.accountName : '';
     data.accountNumber = !isEmpty(data.accountNumber) ?  data.accountNumber : '';
-    
-    if (!Validator.isMobilePhone(data.phone)) {
-        errors.phone = 'Invalid Phone Number!';
-    }
-    if (!Validator.equals(data.phone.length.toString(), '11')) {
-        errors.phone = 'Invalid Phone Number!';
-    }
-    if (Validator.isEmpty(data.phone)) {
-        errors.phone = 'Phone Number is required!';
-    }
 
     if (Validator.isEmpty(data.bank)) {
         errors.bank = 'Bank name is required!';

@@ -8,6 +8,7 @@ const TextInputGroup = ({
     id,
     name,
     value,
+    placeholder,
     onChange,
     icon,
     info,
@@ -18,12 +19,13 @@ const TextInputGroup = ({
         <div className="col s12 input-field">
             <span className={`${icon} prefix`}></span>
             <input 
-                className={classnames('form-input validate', {
+                className={classnames('form-input profile-field validate', {
                     'invalid': errorMessage
                 })}
                 type={type}
                 id={id}
                 name={name}
+                placeholder={placeholder}
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
@@ -40,6 +42,7 @@ TextInputGroup.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
     icon: PropTypes.string.isRequired,
     info: PropTypes.string,
     errorMessage: PropTypes.string,

@@ -16,11 +16,6 @@ const ProfileSchema = new Schema({
         default: 100
     },
 
-    // hints: {
-    //     type: Number,
-    //     default: 5
-    // },
-
     totalEarnings: {
         type: Number,
         default: 0
