@@ -14,6 +14,9 @@ import FreeGameInstructions from './components/free-quiz/FreeGameInstructions';
 import QuizSummary from './components/free-quiz/QuizSummary';
 import Dashboard from './components/user/Dashboard';
 import Profile from './components/user/Profile';
+import Games from './components/user/Games';
+import Funds from './components/user/Funds';
+import Support from './components/user/Support';
 
 import PrivateRoute from './components/common/PrivateRoute'; 
 
@@ -56,6 +59,15 @@ class App extends Component {
 							</Switch>
 							<Switch>
 								<PrivateRoute path="/profile" exact component={Profile} />
+							</Switch>
+							<Switch>
+								<PrivateRoute path="/myGames" exact component={Games} />
+							</Switch>
+							<Switch>
+								<PrivateRoute path="/funds" exact component={Funds} />
+							</Switch>
+							<Switch>
+								<PrivateRoute path="/support" exact component={Support} />
 							</Switch>
 							<Footer />
 						</Fragment>

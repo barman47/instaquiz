@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
+import M from 'materialize-css';
 
-import { logoutUser } from '../../actions/authActions';
+import { logoutUser, setUserColor } from '../../actions/authActions';
 
 class Dashboard extends Component {
     constructor (props) {
@@ -69,13 +70,27 @@ class Dashboard extends Component {
         let color = Math.floor(Math.random() * 10);
         color = this.state.colors[color];
         this.setState({ color });
+        this.props.setUserColor(color);
+    }
+
+    UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.auth.color) {
+            this.setState({ color: nextProps.auth.color });
+        }
+    }
+
+    componentWillUnmount () {
+        const sidenavElem = document.querySelectorAll('.sidenav');
+        // eslint-disable-next-line
+        const sidenavInstance = M.Sidenav.init(sidenavElem, {});
+        sidenavInstance[0].close();        
     }
 
     greetUser = () => {
         const time = new Date();
         const hour = time.getHours();
         if (hour < 12) {
-            return '`Hello, top of the morning to you!`;';
+            return 'Hello, top of the morning to you!';
         } else if (hour >= 12 && hour < 16) {
             return 'Good afternoon, so nice having you back.';
         } else {
@@ -86,6 +101,7 @@ class Dashboard extends Component {
     handleLogoutUser = () => {
         this.props.logoutUser();
     };
+    
 
     render () {
         const { color } = this.state;
@@ -104,10 +120,10 @@ class Dashboard extends Component {
                         <ul>
                             <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                             <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
-                            <li><Link to="/"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
+                            <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                             <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
-                            <li><Link to="/"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
-                            <li><Link to="/"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Payment Details</Link></li>
+                            <li><Link to="/funds"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Funds</Link></li>
+                            <li><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                         </ul>
                     </section>
                     <section className="main">
@@ -125,15 +141,13 @@ class Dashboard extends Component {
                                     </div>
                                     <li className="divider"></li>  
                                     <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
-                                    <br/>
                                     <li className="dashboard-active"><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
-                                    <li><Link to="/"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
+                                    <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
                                     <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
-                                    <li><Link to="/"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
-                                    <li><Link to="/"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Payment Details</Link></li>
-                                    <br/>
+                                    <li><Link to="/funds"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Funds</Link></li>
+                                    <li><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                                     <li className="divider"></li>
-                                    <li><Link to="/"><span style={{ color: '#ea4335' }} className="mdi mdi-power mdi-24px link-icon logout-icon"></span>Log out</Link></li>
+                                    <li onClick={this.handleLogoutUser}><Link to="/#"><span style={{ color: '#ea4335' }} className="mdi mdi-power mdi-24px link-icon logout-icon"></span>Log out</Link></li>
                                 </ul>
                                 <div>
                                     <button id="logoutButton" onClick={this.handleLogoutUser}>
@@ -211,4 +225,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { logoutUser })(Dashboard);
+export default connect(mapStateToProps, { logoutUser, setUserColor })(Dashboard);

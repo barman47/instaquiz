@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER } from "../actions/types";
+import { SET_CURRENT_USER, SET_USER_COLOR } from "../actions/types";
 import isEmpty from "../validation/is-empty";
 
 const initialState = {
@@ -13,6 +13,12 @@ export default (state = initialState, action) => {
                 ...state,
                 user: action.payload,
                 authenticated: !isEmpty(action.payload)
+            };
+
+        case SET_USER_COLOR:
+            return {
+                ...state,
+                color: action.payload
             };
 
         default:

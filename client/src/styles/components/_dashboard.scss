@@ -6,8 +6,8 @@
     grid-template-columns: 1fr 5fr;
     // column-gap: 1rem;
 
-    li.dashboard-active {
-        background-color: darken($blue, 40%) !important;
+    li.dashboard-active, li.profile-active, li.games-active, li.funds-active, li.support-active {
+        background-color: darken($blue, 50%) !important;
         border-left: 2px solid $off-white;
     }
 
@@ -89,6 +89,7 @@
 
                     h5 {
                         font-size: $sm;
+                        margin-top: 0;
                         padding: $xs;
                         text-align: center;
                         width: 100%;
@@ -174,6 +175,7 @@
                 }
 
                 p {
+                    background-color: $green;
                     color: $off-white;
                     display: flex;
                     border-radius: 50%;
@@ -314,6 +316,7 @@
     }
 
     .menu-icon {
+        cursor: pointer;
         display: block !important;
         margin-right: 10px;
     }

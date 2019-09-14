@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-class Profile extends Component {
+class Support extends Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -60,9 +60,9 @@ class Profile extends Component {
                             <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                             <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                             <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
-                            <li className="profile-active"><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
+                            <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
                             <li><Link to="/funds"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Funds</Link></li>
-                            <li><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
+                            <li className="support-active"><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                         </ul>
                     </section>
                     <section className="main">
@@ -82,9 +82,9 @@ class Profile extends Component {
                                     <li><Link to="/"><span className="mdi mdi-home link-icon mdi-24px"></span>Home</Link></li>
                                     <li><Link to="/dashboard"><span className="mdi mdi-view-dashboard-outline link-icon mdi-24px"></span>Dashboard</Link></li>
                                     <li><Link to="/myGames"><span className="mdi mdi-cube-outline link-icon mdi-24px"></span>My Games</Link></li>
-                                    <li className="dashboard-active"><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
+                                    <li><Link to="/profile"><span className="mdi mdi-settings link-icon mdi-24px"></span>Profile</Link></li>
                                     <li><Link to="/funds"><span className="mdi mdi-credit-card link-icon mdi-24px"></span>Funds</Link></li>
-                                    <li><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
+                                    <li className="support-active"><Link to="/support"><span className="mdi mdi-help-circle-outline link-icon mdi-24px"></span>Support</Link></li>
                                     <li className="divider"></li>
                                     <li onClick={this.handleLogoutUser}><Link to="/#"><span style={{ color: '#ea4335' }} className="mdi mdi-power mdi-24px link-icon logout-icon"></span>Log out</Link></li>
                                 </ul>
@@ -98,13 +98,13 @@ class Profile extends Component {
                             </div>
                         </div>
                         <div className="main__header">
-                            <h1>Profile</h1>
-                            <h5>View and Edit User Info</h5>
+                            <h1>Support</h1>
+                            <h5>Contact Support for inquiries or complaints</h5>
                         </div>
                         <section className="main-content">
                             <h4 style={{ color }} id="greeting">{this.greetUser()}</h4>
-                            <div className="profile-content">
-                                <h1>Profile Content</h1>
+                            <div className="funds-content">
+                                <h1>Funds Content</h1>
                             </div>
                         </section>
                         <div><p>&copy; Copyright Instaquiz 2019</p></div>
@@ -119,4 +119,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps)(Support);

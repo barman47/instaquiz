@@ -1,8 +1,9 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER } from './types';
+import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR } from './types';
 import M from 'materialize-css';
 import setAuthToken from '../utils/setAuthToken';
+
 export const loginUser = (user) => (dispatch) => {
     dispatch({
         type: CLEAR_ERRORS,
@@ -32,24 +33,28 @@ export const loginUser = (user) => (dispatch) => {
 
         })
         .catch(err => {
-            switch (err.response.status) {
-                case 500:
-                    const error = {
-                        message: 'Please check your internet connection',
-                        status: 500
-                    };
-                    dispatch({
-                        type: GET_ERRORS,
-                        payload: error
-                    });
-                    break;
-
-                default:
-                    dispatch({
-                        type: GET_ERRORS,
-                        payload: err.response.data
-                    });
-                    break;
+            try {
+                switch (err.response.status) {
+                    case 500:
+                        const error = {
+                            message: 'Please check your internet connection',
+                            status: 500
+                        };
+                        dispatch({
+                            type: GET_ERRORS,
+                            payload: error
+                        });
+                        break;
+    
+                    default:
+                        dispatch({
+                            type: GET_ERRORS,
+                            payload: err.response.data
+                        });
+                        break;
+                }
+            } catch (error) {
+                console.log(error);
             }
         });
 };
@@ -85,6 +90,11 @@ export const registerUser = (user) => (dispatch) => {
             }
         });
 };
+
+export const setUserColor = (color) => (dispatch) => dispatch({
+    type: SET_USER_COLOR,
+    payload: color
+});
 
 // Set logged in user
 export const setCurrentUser = (decoded) => {
