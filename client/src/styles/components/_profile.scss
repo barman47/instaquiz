@@ -9,6 +9,17 @@
         padding: $sm;
         width: 80%;
 
+        p {
+            color: $off-black;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        p:hover {
+            color: $link-color;
+            text-decoration: underline;
+        }
+
         input {
             font-family: $quicksand;
         }
@@ -31,6 +42,12 @@
         }
 
         button:hover {
+            box-shadow: none;
+        }
+
+        button:disabled {
+            background-color: $gray !important;
+            color: lighten($off-black, 20%);
             box-shadow: none;
         }
 

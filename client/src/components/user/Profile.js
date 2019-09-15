@@ -18,9 +18,11 @@ class Profile extends Component {
             username: this.props.auth.user.username || '',
             email: this.props.auth.user.email || '',
             phone: this.props.auth.user.phone || '',
+            password: '',
             currentPassword: '',
             newPassword: '',
             confirmPassword: '',
+            disabled: true,
             color: this.props.auth.color,
             loading: false,
             errors: {}
@@ -48,21 +50,30 @@ class Profile extends Component {
             });
         }
 
-        if (nextProps.auth.msg) {
+        if (this.props.auth.user !== nextProps.auth.user) {
+            const { user } = nextProps.auth;
             M.toast({
-                html: nextProps.auth.msg.success,
-                classes: 'toast-valid',
-                completeCallback: () => {
-                    this.setState({
-                        errors: {},
-                        currentPassword: '',
-                        newPassword: '',
-                        confirmPassword: '',
-                        loading: false
-                    }, () => {
-                        document.getElementById('change-password-form').reset();
-                    });
-                }
+                html: user.success,
+                classes: 'toast-valid'
+            });
+            this.setState({
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                phone: user.phone,
+                errors: {},
+                currentPassword: '',
+                newPassword: '',
+                confirmPassword: '',
+                password: '',
+                disabled: true,
+                loading: false
+            }, () => {
+                document.querySelectorAll('.profile-field').forEach(item => {
+                    item.classList.remove('invalid');
+                    item.classList.remove('valid');
+                });
+                document.getElementById('change-password-form').reset();
             });
         }
     }
@@ -71,11 +82,11 @@ class Profile extends Component {
         const time = new Date();
         const hour = time.getHours();
         if (hour < 12) {
-            return 'Hello, top of the morning to you!';
+            return `Hello ${this.state.username}, top of the morning to you!`;
         } else if (hour >= 12 && hour < 16) {
-            return 'Good afternoon, so nice having you back.';
+            return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return 'Good evening, hope you had an awesome day?';
+            return `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
     };
 
@@ -99,7 +110,8 @@ class Profile extends Component {
                     firstName: state.firstName,
                     lastName: state.lastName,
                     email: state.email,
-                    phone: state.phone
+                    phone: state.phone,
+                    password: state.password
                 };
                 this.setState({
                     loading: true
@@ -122,6 +134,13 @@ class Profile extends Component {
             default:
                 break;
         }
+    }
+
+    handleEdit = () => {
+        this.setState({
+            disabled: false
+        });
+        M.toast({ html: 'Textfields are currently editable' });
     }
 
     render () {
@@ -186,9 +205,17 @@ class Profile extends Component {
                             <div className="profile-content">
                                 <form onSubmit={this.handleSubmit} id="profile-form" className="profile-form">
                                     <h5>Personal Information</h5>
+                                    <p 
+                                        id="edit-profile" 
+                                        onClick={this.handleEdit}
+                                        title="Click to enable text fields and update your information."
+                                    >
+                                        Click to edit profile info
+                                    </p>
                                     <ProfileTextInput
                                         icon="mdi mdi-account prefix"
                                         id="firstName"
+                                        className="profile-field"
                                         name="firstName"
                                         value={state.firstName}
                                         onChange={this.onChange}
@@ -200,6 +227,7 @@ class Profile extends Component {
                                     <ProfileTextInput
                                         icon="mdi mdi-account prefix"
                                         id="lastName"
+                                        className="profile-field"
                                         name="lastName"
                                         value={state.lastName}
                                         onChange={this.onChange}
@@ -208,22 +236,22 @@ class Profile extends Component {
                                         title="Last name is required"
                                         errorMessage={errors.lastName}
                                     />
-                                    {/* <ProfileTextInput
+                                    <ProfileTextInput
                                         icon="mdi mdi-alphabetical prefix"
                                         id="username"
                                         name="username"
                                         value={state.username}
                                         onChange={this.onChange}
-                                        disabled={state.disabled}
+                                        disabled={true}
                                         placeholder="Username"
-                                        info="Test info"
-                                        title="username is required"
+                                        info="Username cannot be changed"
                                         errorMessage={errors.username}
-                                    /> */}
+                                    />
                                     <ProfileTextInput
                                         icon="mdi mdi-email-outline prefix"
                                         type="email"
                                         id="email"
+                                        className="profile-field"
                                         name="email"
                                         value={state.email}
                                         onChange={this.onChange}
@@ -236,6 +264,7 @@ class Profile extends Component {
                                     <ProfileTextInput
                                         icon="mdi mdi-cellphone-android prefix"
                                         id="phone"
+                                        className="profile-field"
                                         name="phone"
                                         value={state.phone}
                                         onChange={this.onChange}
@@ -245,8 +274,29 @@ class Profile extends Component {
                                         info="e.g. 08012345678"
                                         errorMessage={errors.phone}
                                     />
+                                    <ProfileTextInput
+                                        type="password"
+                                        icon="mdi mdi-lock-outline prefix"
+                                        id="password"
+                                        className="profile-field"
+                                        name="password"
+                                        value={state.password}
+                                        onChange={this.onChange}
+                                        disabled={state.disabled}
+                                        placeholder="Enter Password"
+                                        title="Password is required"
+                                        info="Password is needed to confirm information change."
+                                        errorMessage={errors.password}
+                                    />
                                     <div>
-                                        <button type="submit" id="edit-info-button">Edit Personal Information</button>
+                                        <button 
+                                            className="profile-field" 
+                                            type="submit" 
+                                            id="edit-info-button"
+                                            disabled={state.disabled}
+                                        >
+                                            Edit Personal Information
+                                        </button>
                                     </div>
                                 </form>
                                 <form onSubmit={this.handleSubmit} id="change-password-form" className="profile-form">
@@ -258,7 +308,6 @@ class Profile extends Component {
                                         name="currentPassword"
                                         value={state.currentPassword}
                                         onChange={this.onChange}
-                                        disabled={state.disabled}
                                         placeholder="Current Password"
                                         title="Current password is required"                                        
                                         errorMessage={errors.currentPassword}
@@ -270,7 +319,6 @@ class Profile extends Component {
                                         name="newPassword"
                                         value={state.newPassword}
                                         onChange={this.onChange}
-                                        disabled={state.disabled}
                                         placeholder="New Password"
                                         title="New Password is required"                                        
                                         errorMessage={errors.newPassword}
@@ -282,7 +330,6 @@ class Profile extends Component {
                                         name="confirmPassword"
                                         value={state.confirmPassword}
                                         onChange={this.onChange}
-                                        disabled={state.disabled}
                                         placeholder="Confirm Password Password"
                                         title="Confirm password is required"                                        
                                         errorMessage={errors.confirmPassword}

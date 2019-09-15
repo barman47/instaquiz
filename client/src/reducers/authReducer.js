@@ -1,5 +1,5 @@
-import { SET_CURRENT_USER, SET_USER_COLOR, REQUEST_SUCCESS } from "../actions/types";
-import isEmpty from "../validation/is-empty";
+import { SET_CURRENT_USER, SET_USER_COLOR, PASSWORD_CHANGE_SUCCESSFUL, USER_DATA_UPDATE_SUCCESSFUL } from '../actions/types';
+import isEmpty from '../validation/is-empty';
 
 const initialState = {
     user: {},
@@ -16,7 +16,14 @@ export default (state = initialState, action) => {
                 authenticated: !isEmpty(action.payload)
             };
 
-        case REQUEST_SUCCESS:
+        case USER_DATA_UPDATE_SUCCESSFUL:
+            return {
+                ...state,
+                user: action.payload,
+                msg: action.payload.success
+            }
+
+        case PASSWORD_CHANGE_SUCCESSFUL:
             return {
                 ...state,
                 msg: action.payload

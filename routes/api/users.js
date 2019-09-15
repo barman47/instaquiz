@@ -210,7 +210,8 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email, 
-        phone: req.body.phone
+        phone: req.body.phone,
+        password: req.body.password
     };
 
     User.findOne({ _id: req.user.id })
@@ -222,9 +223,23 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
                             user.firstName = userData.firstName;
                             user.lastName = userData.lastName;
                             user.email = userData.email;
+                            user.phone = userData.phone
                             user.save()
                                 .then(updatedUser => {
-                                    res.json(updatedUser);
+                                    const payload = {
+                                        success: 'Update Successful',
+                                        username: updatedUser.username,
+                                        firstName: updatedUser.firstName,
+                                        lastName: updatedUser.lastName,
+                                        email: updatedUser.email,
+                                        phone: updatedUser.phone
+                                    };
+                                    jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
+                                        res.json({
+                                            ...payload,
+                                            token: `Bearer ${token}`
+                                        });
+                                    });
                                 })
                                 .catch(err => console.log(err));
                         } else {

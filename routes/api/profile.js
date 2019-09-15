@@ -6,7 +6,7 @@ const validateProfileInput = require('../../utils/validation/profile');
 const router = express.Router();
 
 // Register new user
-// @route PUT /api/profilesr
+// @route PUT /api/profiles
 // @desc Create or edit user profile
 // @access Private
 router.put('/', passport.authenticate('jwt', { session: false }), (req, res) => {

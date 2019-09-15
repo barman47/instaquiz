@@ -12,13 +12,14 @@ const TextInputGroup = ({
     icon,
     info,
     disabled,
+    className,
     errorMessage
 }) => (
     <div className="row">
         <div className="col s12 input-field">
             <span className={`${icon} prefix`}></span>
             <input 
-                className={classnames('form-input validate', {
+                className={classnames(`form-input validate ${className}`, {
                     'invalid': errorMessage
                 })}
                 type={type}
@@ -42,6 +43,7 @@ TextInputGroup.propTypes = {
     value: PropTypes.string.isRequired,
     icon: PropTypes.string.isRequired,
     info: PropTypes.string,
+    className: PropTypes.string,
     errorMessage: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool

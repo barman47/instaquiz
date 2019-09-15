@@ -32,11 +32,11 @@ class Funds extends Component {
         const time = new Date();
         const hour = time.getHours();
         if (hour < 12) {
-            return 'Hello, top of the morning to you!';
+            return `Hello ${this.state.username}, top of the morning to you!`;
         } else if (hour >= 12 && hour < 16) {
-            return 'Good afternoon, so nice having you back.';
+            return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return 'Good evening, hope you had an awesome day?';
+            return `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
     };
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR, REQUEST_SUCCESS } from './types';
+import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR, PASSWORD_CHANGE_SUCCESSFUL, USER_DATA_UPDATE_SUCCESSFUL } from './types';
 import M from 'materialize-css';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -94,10 +94,19 @@ export const registerUser = (user) => (dispatch) => {
 export const updateUserData = (userData) => (dispatch) => {
     axios.put('/api/users/updateData', userData)
         .then(res => {
-            dispatch({
-                type: REQUEST_SUCCESS,
-                payload: res.data
-            });
+            const userData = res.data;
+            const token = userData.token;
+            delete userData.token;
+            
+            localStorage.setItem('jwtToken', token);
+            setAuthToken(token);
+            const decoded = jwt_decode(token);
+            dispatch(setCurrentUser(decoded));
+
+            // dispatch({
+            //     type: USER_DATA_UPDATE_SUCCESSFUL,
+            //     payload: res.data
+            // });
         })
         .catch(err => {
             try {
@@ -107,7 +116,8 @@ export const updateUserData = (userData) => (dispatch) => {
                 });
             } catch (err) {
                 dispatch({
-                    type: GET_ERRORS
+                    type: GET_ERRORS,
+                    payload: {}
                 });
                 M.toast({
                     html: 'Error! Please retry.',
@@ -120,7 +130,7 @@ export const updateUserData = (userData) => (dispatch) => {
 export const changePassword = (data) => (dispatch) => {
     axios.put('/api/users/changePassword', data)
         .then(res => dispatch({
-            type: REQUEST_SUCCESS,
+            type: PASSWORD_CHANGE_SUCCESSFUL,
             payload: res.data
         }))
         .catch(err => {
