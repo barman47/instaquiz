@@ -25,11 +25,11 @@ class Funds extends Component {
             expiryDate: this.props.auth.user.expiryDate || '',
             cvv: this.props.auth.user.cvv || '',
             color: this.props.auth.color,
-            // showPaymentNotification: true,
-            // showCardDetails: false,
-            // showBankDetails: false,
-            // showCardForm: false,
-            // showBankForm: false,
+            showPaymentNotification: true,
+            showCardDetails: false,
+            showBankDetails: false,
+            showCardForm: false,
+            showBankForm: false,
             disableEditBank: true,
             errors: {}
         };
@@ -40,22 +40,21 @@ class Funds extends Component {
         // eslint-disable-next-line
         const sidenavInstance = M.Sidenav.init(sidenavElem, {});
 
-        var selectElement = document.querySelectorAll('select');
+        const selectElement = document.querySelectorAll('select');
         // eslint-disable-next-line
-        var selectInstance = M.FormSelect.init(selectElement, {});
+        const selectInstance = M.FormSelect.init(selectElement, {});
 
-        // const { user } = this.props.auth;
-
-        // this.setState({
-        //     username: user.username,
-        //     accountNumber: user.accountNumber,
-        //     accountName: user.accountName,
-        //     bank: user.bank,
-        //     cardNumber: user.cardNumber,
-        //     cardName: user.cardName ,
-        //     expiryDate: user.expiryDate,
-        //     cvv: user.cvv,
-        // });
+        const { user } = this.props.auth;
+        
+        if (user.bank && user.cardNumber) {
+            this.setState({
+                showBankDetails: true,
+                showCardDetails: true,
+                showBankForm: false,
+                showCardForm: false,
+                showPaymentNotification: false
+            });
+        }
     }
 
     // UNSAFE_componentWillReceiveProps (nextProps) {

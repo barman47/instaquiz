@@ -209,4 +209,8 @@
     .funds-content .credit-card-container {
         grid-template-columns: 1fr;
     }
+
+    button#edit-bank {
+        margin-left: 0 !important;
+    }
 }
