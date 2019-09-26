@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const Ravepay = require('ravepay');
 
 const keys = require('../../config/keys');
 
@@ -111,7 +112,7 @@ router.post('/login', (req, res) => {
                                     email: user.email,
                                     lastSeen: user.lastSeen,
                                     createdAt: user.createAt,
-                                    phone: profile.phone,
+                                    phone: user.phone,
                                     balance: profile.balance,
                                     totalEarnings: profile.totalEarnings,
                                     gamesPlayed: profile.gamesPlayed,
@@ -200,6 +201,7 @@ router.put('/changePassword', passport.authenticate('jwt', { session: false }), 
 // @desc update user data
 // @access Private
 router.put('/updateData', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.user.id);
     const { errors, isValid } = validateUpdateDataInput(req.body);
 
     if (!isValid) {
@@ -207,9 +209,9 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
     }
 
     const userData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email, 
+        firstName: req.body.firstName.toUpperCase(),
+        lastName: req.body.lastName.toUpperCase(),
+        email: req.body.email.toLowerCase(), 
         phone: req.body.phone,
         password: req.body.password
     };
@@ -226,20 +228,36 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
                             user.phone = userData.phone
                             user.save()
                                 .then(updatedUser => {
-                                    const payload = {
-                                        success: 'Update Successful',
-                                        username: updatedUser.username,
-                                        firstName: updatedUser.firstName,
-                                        lastName: updatedUser.lastName,
-                                        email: updatedUser.email,
-                                        phone: updatedUser.phone
-                                    };
-                                    jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
-                                        res.json({
-                                            ...payload,
-                                            token: `Bearer ${token}`
-                                        });
-                                    });
+                                    Profile.findOne({ user: req.user.id })
+                                        .then(profile => {
+                                            const payload = {
+                                                success: 'Update Successful',
+                                                id: updatedUser.id,
+                                                username: updatedUser.username,
+                                                firstName: updatedUser.firstName,
+                                                lastName: updatedUser.lastName,
+                                                email: updatedUser.email,
+                                                phone: updatedUser.phone,
+                                                lastSeen: user.lastSeen,
+                                                createdAt: user.createAt,
+                                                balance: profile.balance,
+                                                totalEarnings: profile.totalEarnings,
+                                                gamesPlayed: profile.gamesPlayed,
+                                                rank: profile.rank,
+                                                wins: profile.wins,
+                                                losses: profile.losses,
+                                                bank: profile.bank,
+                                                accountName: profile.accountName,
+                                                accountNumber: profile.accountNumber
+                                            };
+                                            jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
+                                                res.json({
+                                                    ...payload,
+                                                    token: `Bearer ${token}`
+                                                });
+                                            });
+                                        })
+                                        .catch(err => console.log(err))
                                 })
                                 .catch(err => console.log(err));
                         } else {
@@ -261,6 +279,50 @@ router.get('/quiz/category/:quizCategory', passport.authenticate('jwt', { sessio
     Quiz.find({ type: req.params.quizCategory })
         .then(quizzes => res.json(quizzes))
         .catch(err => console.log(err));
+});
+
+// funds user account
+// @route POST /api/users/fundAccount
+// @desc Add funds to user account
+// @access Private
+router.post('/fundAccount', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const publicKey = 'FLWPUBK-1a0620ce92aeed540c4de14424668caf-X';
+    const secret = 'FLWSECK-4d3a45d7786963cbb688f9265b3eca67-X';
+    const encryptionKey = '4d3a45d77869397ffdbb1b3b';
+    const merchantID = '3017378';
+
+    const customer = req.body;
+    // Authenticate Library with test public_key and test secret_key
+    const rave = new Ravepay(publicKey, secret, false);
+    rave.Card.charge({
+        "cardno": customer.cardNumber,
+        "cvv": customer.cvv,
+        "expirymonth": customer.expiryMonth,
+        "expiryyear": customer.expiryYear,
+        "currency": "NGN",
+        "country": "NG",
+        "amount": customer.amount,
+        "email": customer.email,
+        "phonenumber": customer.phone,
+        "firstname": customer.firstName,
+        "lastname": customer.lastName,
+        "IP": "355426087298442",
+        "txRef": "MC-" + Date.now(),// your unique merchant reference
+        "meta": [{metaname: "flightID", metavalue: "123949494DC"}],
+        "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment"
+    })
+    .then(paymentResponse => {
+        console.log(paymentResponse.body);
+        rave.Card.validate({
+            "transaction_reference":resp.body.data.flwRef,
+            "otp":12345
+        }).then(response => {
+            console.log(response.body.data.tx);
+            
+        })
+    })
+    .catch(err => console.log(err));
+    
 });
 
 module.exports = router;

@@ -37,7 +37,7 @@ const QuizSchema = new Schema({
         required: true
     },
 
-    createdAt: {
+    dateCreated: {
         type: Date,
         default: new Date()
     }

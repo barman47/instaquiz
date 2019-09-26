@@ -3,15 +3,35 @@ import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import { logoutUser } from '../../actions/authActions';
+
+import Dropdown from '../input-groups/Dropdown';
+import CardTextInput from '../input-groups/CardTextInput';
+import FundsTextInput from '../input-groups/FundsTextInput';
 
 class Funds extends Component {
     constructor (props) {
         super(props);
         this.state = {
             user: this.props.auth.user,
-            color: this.props.auth.color
+            username: this.props.auth.user.username,
+            accountNumber: this.props.auth.user.accountNumber || '',
+            accountName: this.props.auth.user.accountName || '',
+            bank: this.props.auth.user.bank || '',
+            cardNumber: this.props.auth.user.cardNumber || '',
+            cardName: this.props.auth.user.cardName || '',
+            expiryDate: this.props.auth.user.expiryDate || '',
+            cvv: this.props.auth.user.cvv || '',
+            color: this.props.auth.color,
+            // showPaymentNotification: true,
+            // showCardDetails: false,
+            // showBankDetails: false,
+            // showCardForm: false,
+            // showBankForm: false,
+            disableEditBank: true,
+            errors: {}
         };
     }
 
@@ -19,7 +39,38 @@ class Funds extends Component {
         const sidenavElem = document.querySelectorAll('.sidenav');
         // eslint-disable-next-line
         const sidenavInstance = M.Sidenav.init(sidenavElem, {});
+
+        var selectElement = document.querySelectorAll('select');
+        // eslint-disable-next-line
+        var selectInstance = M.FormSelect.init(selectElement, {});
+
+        // const { user } = this.props.auth;
+
+        // this.setState({
+        //     username: user.username,
+        //     accountNumber: user.accountNumber,
+        //     accountName: user.accountName,
+        //     bank: user.bank,
+        //     cardNumber: user.cardNumber,
+        //     cardName: user.cardName ,
+        //     expiryDate: user.expiryDate,
+        //     cvv: user.cvv,
+        // });
     }
+
+    // UNSAFE_componentWillReceiveProps (nextProps) {
+    //     if (nextProps.auth.user) {
+    //         this.setState({
+    //             accountNumber: '',
+    //             accountName: '',
+    //             bank: '',
+    //             cardNumber: '',
+    //             cardName: '',
+    //             expiryDate: '',
+    //             cvv: '',
+    //         });
+    //     }
+    // } 
 
     componentWillUnmount () {
         const sidenavElem = document.querySelectorAll('.sidenav');
@@ -36,17 +87,44 @@ class Funds extends Component {
         } else if (hour >= 12 && hour < 16) {
             return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return `Good evening ${this.state.username}, hope you had an awesome day?`;
+            return  `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
-    };
+    }
+
+    handleAddPayment = (e) => {
+        switch (e.target.id) {
+            case 'add-card':
+                this.setState({
+                    showCardForm: true,
+                    showBankForm: false
+                });
+                break;
+
+            case 'add-bank':
+                this.setState({
+                    showBankForm: true,
+                    showCardForm: false
+                });
+                break;
+
+            default: 
+                break;
+        }
+    }
+
+    onChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
 
     handleLogoutUser = () => {
         this.props.logoutUser();
-    };
+    }
 
     render () {
-        const { user } = this.state;
-        const { color } = this.state;
+        const { state } = this;
+        const { color, errors, user } = this.state;
         return (
             <Fragment>
                 <Helmet><title>Dashboard - Instaquiz</title></Helmet>
@@ -99,12 +177,124 @@ class Funds extends Component {
                             </div>
                         </div>
                         <div className="main__header">
-                            <h1>Profile</h1>
-                            <h5>Funds Information</h5>
+                            <h1>My Funds</h1>
+                            <h5>View and Edit Your Payment Information</h5>
                         </div>
                         <section className="main-content">
                             <div className="funds-content">
-                                <h1>Funds Content</h1>
+                                <div className={classnames('funds-info', { 'hide': state.showCardDetails === false})}>
+                                    <div>
+                                        <p>This account is currently funded by</p>
+                                        <p>XXXX-XXXX-XXXX-XXXX</p>
+                                    </div>
+                                    <div>
+                                        <button className="card-button">Change Credit Card</button>
+                                        <button className="card-button">Remove Credit Card</button>
+                                    </div>
+                                </div>
+                                <div className={classnames('bank-details', { 'hide': state.showBankDetails === false })}>
+                                    <p><span className="title">Account Name:</span> Uzoanya Dominic Chinomso</p>
+                                    <p><span className="title">Account Number:</span> 0043031752</p>
+                                    <p><span className="title">Bank Name:</span> First City Monument Bank</p>
+                                    {/* <p>Bank Name: Diamond Bank</p> */}
+                                </div>
+                                <section className={classnames('payment-message', { 'hide': state.showPaymentNotification === false })}>
+                                    <p><span className="mdi mdi-information-outline mdi-24px"></span>You do not have any means of funding your account. Please add a bank account and (or) a credit add to enable you make and receive payments.</p>
+                                    <div>
+                                        <button className="add-payment" id="add-card" onClick={this.handleAddPayment}>Add Credit Card</button>
+                                        <button className="add-payment" id="add-bank" onClick={this.handleAddPayment}>Add Bank Account</button>
+                                    </div>
+                                </section>
+                                <form id="bank-form" className={classnames('', { 'hide': state.showBankForm === false })}>
+                                    <h5>Bank Account Details</h5>
+                                    <p>Enter your local bank account details to be enable us send funds to your bank account.</p>
+                                    <div className="row">
+                                        <CardTextInput
+                                            type="number"
+                                            icon="mdi mdi-numeric prefix"
+                                            id="accountNumber"
+                                            name="accountNumber"
+                                            value={state.accountNumber}
+                                            onChange={this.onChange}
+                                            label="Account Number"
+                                            errorMessage={errors.accountNumber}
+                                        />
+                                        <CardTextInput
+                                            icon="mdi mdi-alphabetical prefix"
+                                            id="accountName"
+                                            name="accountName"
+                                            value={state.accountName}
+                                            onChange={this.onChange}
+                                            label="Account Name"
+                                            errorMessage={errors.accountName}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <Dropdown 
+                                            id="bank"
+                                            name="bank"
+                                            value={state.bank}
+                                            onChange={this.onChange}
+                                            errorMessage={errors.bank}
+                                            label="Bank Name"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <button type="submit">Add Bank</button>
+                                        <button disabled={state.disableEditBank} id="edit-bank" type="submit">Edit Details</button>
+                                    </div>
+                                </form>
+                                <form id="card-form" className={classnames('', { 'hide': state.showCardForm === false })}>
+                                    <h5>Credit Card Information</h5>
+                                    <p>Provide card details to enable you funbd your e-wallet.</p>
+                                    <div className="credit-card-container">
+                                        <CardTextInput
+                                            icon="mdi mdi-credit-card prefix"
+                                            id="cardNumber"
+                                            name="cardNumber"
+                                            value={state.cardNumber}
+                                            onChange={this.onChange}
+                                            label="Number on Card"
+                                            errorMessage={errors.cardNumber}
+                                            info="XXXX-XXXX-XXXX-XXXX"
+                                        />
+                                        <CardTextInput
+                                            icon="mdi mdi-alphabetical prefix"
+                                            id="cardName"
+                                            name="cardName"
+                                            value={state.cardName}
+                                            onChange={this.onChange}
+                                            label="Name on Card"
+                                            errorMessage={errors.cardName}
+                                            info="e.g. John Doe"
+                                        />
+                                    </div>
+                                    <div className="credit-card-container">
+                                        <FundsTextInput
+                                            icon="mdi mdi-calendar-month prefix"
+                                            id="expiryDate"
+                                            name="expiryDate"
+                                            value={state.expiryDate}
+                                            onChange={this.onChange}
+                                            label="Expiry Date"
+                                            errorMessage={errors.expiryDate}
+                                            info="XX/XX"
+                                        />
+                                        <FundsTextInput
+                                            icon="mdi mdi-numeric prefix"
+                                            id="cvv"
+                                            name="cvv"
+                                            value={state.cvv}
+                                            onChange={this.onChange}
+                                            label="CVV"
+                                            errorMessage={errors.cvv}
+                                            info="e.g. XXX"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <button type="submit">Add Card</button>
+                                    </div>
+                                </form>
                             </div>
                         </section>
                         <div><p>&copy; Copyright Instaquiz 2019</p></div>

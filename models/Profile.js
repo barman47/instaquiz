@@ -7,10 +7,6 @@ const ProfileSchema = new Schema({
         ref: 'user'
     },
 
-    phone: {
-        type: String,
-    },
-
     balance: {
         type: Number,
         default: 100

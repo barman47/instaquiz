@@ -6,7 +6,7 @@ import M from 'materialize-css';
 import classnames from 'classnames';
 
 import TextInputGroup from '../input-groups/TextInputGroup';
-import SpinnerComponent from '../common/SpinnerComponent';
+import Spinner from '../common/Spinner';
 
 import { loginUser } from '../../actions/authActions';
 
@@ -133,7 +133,7 @@ class Login extends Component {
                         </form>
                     </div>
                 </section>
-                <SpinnerComponent loading={this.state.loading} text="Just a sec . . ." />
+                <Spinner loading={this.state.loading} text="Just a sec . . ." />
             </Fragment>
         );
     }

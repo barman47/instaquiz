@@ -19,8 +19,11 @@ const UserSchema = new Schema({
     },
 
     email: {
-        type: String,
-        required: true
+        type: String
+    },
+
+    phone: {
+        type: String
     },
 
     password: {
@@ -28,7 +31,7 @@ const UserSchema = new Schema({
         required: true
     },
 
-    createdAt: {
+    dateCreated: {
         type: Date,
         default: new Date()
     },

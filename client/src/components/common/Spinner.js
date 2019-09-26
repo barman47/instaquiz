@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-const SpinnerComponent = ({ loading, text }) => (
-    <div className={classnames('button-container', { 'show': loading === true })}>
+const Spinner = ({ loading, text }) => (
+    <div className={classnames('spinner-container', { 'show': loading === true })}>
         <div className="preloader-wrapper big active">
             <div className="spinner-layer spinner-blue-only">
                 <div className="circle-clipper left">
@@ -21,9 +21,9 @@ const SpinnerComponent = ({ loading, text }) => (
     </div>
 );
 
-SpinnerComponent.propTypes = {
+Spinner.propTypes = {
     loading: PropTypes.bool.isRequired,
     text: PropTypes.string.isRequired
 };
 
-export default SpinnerComponent;
+export default Spinner;

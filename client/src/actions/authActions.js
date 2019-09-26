@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR, PASSWORD_CHANGE_SUCCESSFUL, USER_DATA_UPDATE_SUCCESSFUL } from './types';
+import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, SET_USER_COLOR, PASSWORD_CHANGE_SUCCESSFUL } from './types';
 import M from 'materialize-css';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -20,6 +20,7 @@ export const loginUser = (user) => (dispatch) => {
             const { token } = res.data;
             
             // Set token to local storage
+
             localStorage.setItem('jwtToken', token);
 
             // Set token to auth header
@@ -61,32 +62,42 @@ export const loginUser = (user) => (dispatch) => {
 
 export const registerUser = (user) => (dispatch) => {
     axios.post('/api/users/register', user)
-        .then(res => {
+        .then(() => {
             dispatch({
                 type: CLEAR_ERRORS,
                 payload: {}
             });
         })
         .catch(err => {
-            console.log(err);
-            switch (err.response.status) {
-                case 500:
-                    const error = {
-                        message: 'Please check your internet connection',
-                        status: 500
-                    };
-                    dispatch({
-                        type: GET_ERRORS,
-                        payload: error
-                    });
-                    break;
-
-                default:
-                    dispatch({
-                        type: GET_ERRORS,
-                        payload: err.response.data
-                    });
-                    break;
+            try {
+                switch (err.response.status) {
+                    case 500:
+                        const error = {
+                            message: 'Please check your internet connection',
+                            status: 500
+                        };
+                        dispatch({
+                            type: GET_ERRORS,
+                            payload: error
+                        });
+                        break;
+    
+                    default:
+                        dispatch({
+                            type: GET_ERRORS,
+                            payload: err.response.data
+                        });
+                        break;
+                }
+            } catch (err) {
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: {}
+                });
+                M.toast({
+                    html: 'Error! Please retry.',
+                    classes: 'toast-invalid'
+                })
             }
         });
 };
@@ -94,19 +105,18 @@ export const registerUser = (user) => (dispatch) => {
 export const updateUserData = (userData) => (dispatch) => {
     axios.put('/api/users/updateData', userData)
         .then(res => {
-            const userData = res.data;
-            const token = userData.token;
-            delete userData.token;
-            
-            localStorage.setItem('jwtToken', token);
-            setAuthToken(token);
-            const decoded = jwt_decode(token);
-            dispatch(setCurrentUser(decoded));
+            if (localStorage.jwtToken) {
+                localStorage.removeItem('jwtToken');
 
-            // dispatch({
-            //     type: USER_DATA_UPDATE_SUCCESSFUL,
-            //     payload: res.data
-            // });
+                const userData = res.data;
+                const token = userData.token;
+                delete userData.token;
+                
+                localStorage.setItem('jwtToken', token);
+                setAuthToken(token);
+                const decoded = jwt_decode(token);
+                dispatch(setCurrentUser(decoded));
+            }
         })
         .catch(err => {
             try {

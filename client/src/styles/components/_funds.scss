@@ -1,0 +1,212 @@
+.funds-content {
+    margin-left: 2%;
+
+    section {
+        background-color:  rgba(87, 184, 70, 0.4);
+        margin-left: -2%;
+        margin-top: $md;
+        padding: $sm;
+    }
+
+    section p {
+        color: lighten($green, 10%);
+    }
+
+    section div button {
+        background-color:  rgba(87, 184, 70, 0.8);
+        border: none;
+        border-radius: $button-radius;
+        color: $off-white;
+        cursor: pointer;
+        font-family: $quicksand;
+        margin-top: $sm;
+        padding: $normal $lg;
+        transition: 0.3s linear all;
+    }
+
+    section div button:hover {
+        background-color: $green;
+    }
+
+    section div button:first-child {
+        margin-right: $sm;
+    }
+    
+    h5:first-child {
+        color: lighten($off-black, 10%);
+        text-align: center;
+    }
+
+    .funds-info {
+        display: flex;
+        justify-content: space-around;
+        border: 1px solid darken($off-white, 10%);
+        border-radius: 10px;
+        margin: $md auto;
+        padding-top: $sm;
+        padding-bottom: $sm;
+        width: 95%;
+    }
+
+    .funds-info .card-button {
+        background-color: transparent;
+        border-radius: $button-radius;
+        cursor: pointer;
+        padding: $xs $sm;
+        transition: 0.3s linear all;
+    }
+
+    .funds-info .card-button:first-child {
+        margin-right: $sm;
+        border: 1px solid $green;
+        color: $green;
+    }
+    .funds-info .card-button:first-child:hover {
+        background-color: $green;
+        color: $off-white;
+    }
+
+    .funds-info .card-button:last-child {
+        border: 1px solid $red;
+        color: $red;
+    }
+    .funds-info .card-button:last-child:hover {
+        background-color: $red;
+        color: $off-white;
+    }
+
+    .bank-details {
+        color: lighten($off-black, 20%);
+        display: flex;
+        justify-content: space-evenly;
+        border: 1px solid darken($off-white, 10%);
+        border-radius: 10px;
+        margin: $md auto;
+        padding-top: $sm;
+        padding-bottom: $sm;
+        width: 95%;
+    }
+
+    // .bank-details .title {
+    //     color: $blue;
+    // }
+
+    form {
+        border-radius: 5px;
+        background-color: #fff;
+        padding: $xs $sm;
+        margin: $lg auto;
+        width: 80%;
+
+        h5, p {
+            text-align: center;
+        }
+
+        h5 {
+            color: $blue !important;
+        }
+
+        p {
+            color: lighten($off-black, 10%);
+        }
+
+        button {
+            background-color: $blue;
+            border: none;
+            border-radius: $button-radius;
+            color: $off-white;
+            cursor: pointer;
+            font-family: $quicksand;
+            margin-bottom: $sm;
+            padding: $normal $lg;
+            transition: 0.3s linear all;
+        }
+
+        button#edit-bank {
+            background-color: transparent;
+            color: $red;
+            border: 1px solid $red;
+            margin-left: $lg;
+        }
+        button#edit-bank:hover {
+            background-color: $red;
+            color: $off-white;
+        }
+        button#edit-bank:hover {
+            background-color: $red;
+            color: $off-white;
+        }
+        button#edit-bank:disabled {
+            background-color: lighten($gray, 5%);
+            border: none;
+            color: $off-white;
+        }
+        button#edit-bank:disabled:hover {
+            box-shadow: none;
+        }
+
+        button:hover {
+            background-color: darken($blue, 10%);
+            box-shadow: $shadow;
+        }
+    }
+
+    .credit-card-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: $sm;
+    }
+
+    .hide {
+        display: 'none';
+    }
+}
+
+@media (max-width: $md-breakpoint) {
+    .main__header h5 {
+        font-size: $normal !important;
+    }
+
+    .add-payment {
+        width: 100%;
+    }
+
+    .funds-info {
+        flex-direction: column;
+        padding-left: $normal;
+        padding-right: $normal;
+    }
+
+    .funds-info div:first-child {
+        text-align: center;
+    }
+
+    .funds-info div:last-child {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .funds-info div:last-child button {
+        margin-top: $sm;
+        width: 100%;
+    }
+
+    .bank-details {
+        color: lighten($off-black, 10%);
+        flex-direction: column;
+        padding-left: $sm;
+    }
+
+    form#bank-form, #card-form {
+        margin: $normal $xlg $normal $xs;
+        width: 95%;
+    }
+
+    form#bank-form button, #card-form button {
+        width: 100%;
+    }
+
+    .funds-content .credit-card-container {
+        grid-template-columns: 1fr;
+    }
+}

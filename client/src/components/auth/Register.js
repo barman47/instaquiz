@@ -9,7 +9,7 @@ import { registerUser } from '../../actions/authActions';
 import isEmpty from '../../validation/is-empty';
 
 import TextInputGroup from '../input-groups/TextInputGroup';
-import SpinnerComponent from '../common/SpinnerComponent';
+import Spinner from '../common/Spinner';
 
 class Register extends Component {
     constructor (props) {
@@ -179,7 +179,7 @@ class Register extends Component {
                         </form>
                     </div>
                 </section>
-                <SpinnerComponent loading={this.state.loading} text="Please wait . . ." />
+                <Spinner loading={this.state.loading} text="Please wait . . ." />
             </Fragment>
         );
     }

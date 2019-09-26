@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 import M from 'materialize-css';
 
 import { changePassword, logoutUser, updateUserData } from '../../actions/authActions';
+
 import ProfileTextInput from '../input-groups/ProfileTextInput';
+import Spinner from '../common/Spinner';
 
 class Profile extends Component {
     constructor (props) {
@@ -57,6 +59,7 @@ class Profile extends Component {
                 classes: 'toast-valid'
             });
             this.setState({
+                user,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
@@ -86,13 +89,13 @@ class Profile extends Component {
         } else if (hour >= 12 && hour < 16) {
             return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return `Good evening ${this.state.username}, hope you had an awesome day?`;
+            return  `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
-    };
+    }
 
     handleLogoutUser = () => {
         this.props.logoutUser();
-    };
+    }
 
     onChange = (e) => {
         this.setState({
@@ -102,6 +105,9 @@ class Profile extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.setState({
+            loading: true
+        });
         const { state } = this;
         let data;
         switch (e.target.id) {
@@ -113,9 +119,6 @@ class Profile extends Component {
                     phone: state.phone,
                     password: state.password
                 };
-                this.setState({
-                    loading: true
-                });
                 this.props.updateUserData(data);
                 break;
 
@@ -125,9 +128,6 @@ class Profile extends Component {
                     newPassword: state.newPassword,
                     confirmPassword: state.confirmPassword
                 };
-                this.setState({
-                    loading: true
-                });
                 this.props.changePassword(data);
                 break;
 
@@ -343,6 +343,7 @@ class Profile extends Component {
                         <div><p>&copy; Copyright Instaquiz 2019</p></div>
                     </section>
                 </div>
+                <Spinner loading={state.loading} text="One Moment . . ." />
             </Fragment>
         );
     }

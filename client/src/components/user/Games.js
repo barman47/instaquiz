@@ -19,6 +19,11 @@ class Games extends Component {
         const sidenavElem = document.querySelectorAll('.sidenav');
         // eslint-disable-next-line
         const sidenavInstance = M.Sidenav.init(sidenavElem, {});
+        const { user } = this.props.auth;
+
+        this.setState({
+            username: user.username
+        });
     }
 
     componentWillUnmount () {
@@ -36,17 +41,16 @@ class Games extends Component {
         } else if (hour >= 12 && hour < 16) {
             return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return `Good evening ${this.state.username}, hope you had an awesome day?`;
+            return  `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
     }
 
     handleLogoutUser = () => {
         this.props.logoutUser();
-    };
+    }
 
     render () {
-        const { user } = this.state;
-        const { color } = this.state;
+        const { color, user } = this.state;
         return (
             <Fragment>
                 <Helmet><title>Dashboard - Instaquiz</title></Helmet>

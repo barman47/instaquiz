@@ -45,15 +45,11 @@ class Dashboard extends Component {
         };
     }
 
-    UNSAFE_componentWillMount () {
-        
-    }
-
     componentDidMount () {
         const sidenavElem = document.querySelectorAll('.sidenav');
         // eslint-disable-next-line
         const sidenavInstance = M.Sidenav.init(sidenavElem, {});
-        
+
         const { user } = this.props.auth;
         this.setState({
             firstName: user.firstName,
@@ -98,13 +94,13 @@ class Dashboard extends Component {
         } else if (hour >= 12 && hour < 16) {
             return `Good afternoon ${this.state.username}, so nice having you back.`;
         } else {
-            return `Good evening ${this.state.username}, hope you had an awesome day?`;
+            return  `Good evening ${this.state.username}, hope you had an awesome day?`;
         }
-    };
+    }
 
     handleLogoutUser = () => {
         this.props.logoutUser();
-    };
+    }
     
 
     render () {
@@ -133,7 +129,11 @@ class Dashboard extends Component {
                         <div className="main__top">
                             <div className="initials-container">
                                 <h4 style={{ color }}>{this.greetUser()}</h4>
-                                <h4 className="show-on-small" id="logo"><span data-target="mobile-menu" className="mdi mdi-menu mdi-24px sidenav-trigger left menu-icon"></span>Logo</h4>
+                                <h4 className="show-on-small" id="logo">
+                                    <span data-target="mobile-menu" style={{ fontSize: '36px', marginLeft: '10px' }} className="mdi mdi-menu sidenav-trigger left menu-icon">
+                                    </span>
+                                    Logo
+                                </h4>
                                 <ul className="sidenav" id="mobile-menu">
                                     <h5>AppName or Logo</h5>
                                     <div className="avatar-section">

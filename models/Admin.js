@@ -12,7 +12,7 @@ const AdminSchema = new Schema({
         required: true
     },
 
-    createdAt: {
+    dateCreated: {
         type: Date,
         default: new Date()
     }

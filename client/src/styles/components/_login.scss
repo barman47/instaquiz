@@ -79,26 +79,6 @@
     }
 }
 
-.button-container {
-    background-color: rgba(0, 0, 0, .4);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    overflow: hidden;
-
-    p {
-        color: $off-white;
-    }
-}
-
-.show {
-    display: flex !important;
-}
-
 @media (max-width: $md-breakpoint) {
     .login-container form {
         padding-left: $sm;
