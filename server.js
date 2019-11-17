@@ -15,7 +15,12 @@ const publicPath = path.resolve(__dirname, 'client', 'build');
 
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(database_URI, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(database_URI, { 
+    useNewUrlParser: true, 
+    useFindAndModify: false, 
+    useCreateIndex: true,
+    useUnifiedTopology: true 
+})
     .then(() => console.log('Database Connected!'))
     .catch(err => console.log(err));
 

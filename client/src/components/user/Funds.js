@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { logoutUser } from '../../actions/authActions';
+import { addBank, addCard, logoutUser, removeBank } from '../../actions/authActions';
 
 import Dropdown from '../input-groups/Dropdown';
 import CardTextInput from '../input-groups/CardTextInput';
 import FundsTextInput from '../input-groups/FundsTextInput';
+import Spinner from '../common/Spinner';
 
 class Funds extends Component {
     constructor (props) {
@@ -22,15 +23,19 @@ class Funds extends Component {
             bank: this.props.auth.user.bank || '',
             cardNumber: this.props.auth.user.cardNumber || '',
             cardName: this.props.auth.user.cardName || '',
-            expiryDate: this.props.auth.user.expiryDate || '',
+            cardExp: this.props.auth.user.cardExp || '',
             cvv: this.props.auth.user.cvv || '',
+            cardEnding: '',
             color: this.props.auth.color,
             showPaymentNotification: true,
             showCardDetails: false,
             showBankDetails: false,
             showCardForm: false,
             showBankForm: false,
+            showAddCardButton: true,
+            showAddBankButton: true,
             disableEditBank: true,
+            loading: false,
             errors: {}
         };
     }
@@ -44,32 +49,68 @@ class Funds extends Component {
         // eslint-disable-next-line
         const selectInstance = M.FormSelect.init(selectElement, {});
 
-        const { user } = this.props.auth;
+        const { state } = this;
         
-        if (user.bank && user.cardNumber) {
+        if (state.bank === '' || state.accountNumber === '' || state.accountName === '') {
+            this.setState({
+                showBankDetails: false
+            });
+        } else {
             this.setState({
                 showBankDetails: true,
-                showCardDetails: true,
                 showBankForm: false,
+                showAddBankButton: false
+            });
+        }
+
+        if (state.cardName === '' || state.cardNumber === '' || state.cardExp === '' || state.cvv === '') {
+            this.setState({
+                showCardDetails: false
+            });
+        } else {
+            this.setState({
+                showCardDetails: true,
                 showCardForm: false,
+                showAddCardButton: false
+            });
+        }
+
+        if ((state.cardName === '' || state.cardNumber === '' || state.cardExp === '' || state.cvv === '') || (state.bank === '' || state.accountNumber === '' || state.accountName === '')) {
+            this.setState({
+                showPaymentNotification: true
+            });
+        } else {
+            this.setState({
                 showPaymentNotification: false
             });
         }
+
+        this.setCardEnding();
     }
 
-    // UNSAFE_componentWillReceiveProps (nextProps) {
-    //     if (nextProps.auth.user) {
-    //         this.setState({
-    //             accountNumber: '',
-    //             accountName: '',
-    //             bank: '',
-    //             cardNumber: '',
-    //             cardName: '',
-    //             expiryDate: '',
-    //             cvv: '',
-    //         });
-    //     }
-    // } 
+    UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.errors) {
+            this.setState({
+                errors: nextProps.errors,
+                loading: false
+            });
+        }
+
+        if (nextProps) {
+            console.log(nextProps);
+        }
+        // if (nextProps.auth.user) {
+        //     this.setState({
+        //         accountNumber: '',
+        //         accountName: '',
+        //         bank: '',
+        //         cardNumber: '',
+        //         cardName: '',
+        //         cardExp: '',
+        //         cvv: '',
+        //     });
+        // }
+    }
 
     componentWillUnmount () {
         const sidenavElem = document.querySelectorAll('.sidenav');
@@ -99,6 +140,19 @@ class Funds extends Component {
                 });
                 break;
 
+            case 'change-card':
+                this.setState({
+                    showCardForm: true,
+                    showBankForm: false,
+                    cardNumber: '',
+                    cardName: '',
+                    cardExp: '',
+                    cvv: '',
+                }, () => {
+                    document.getElementById('card-form').reset();
+                });
+                break;
+
             case 'add-bank':
                 this.setState({
                     showBankForm: true,
@@ -107,6 +161,23 @@ class Funds extends Component {
                 break;
 
             default: 
+                break;
+        }
+    }
+
+    handleChangeBank = (e) => {
+        switch (e.target.id) {
+            case 'change-bank':
+                this.setState({
+                    showBankForm: true
+                });
+                break;
+
+            case 'remove-bank':
+                this.props.removeBank();
+                break;
+
+            default:
                 break;
         }
     }
@@ -121,9 +192,53 @@ class Funds extends Component {
         this.props.logoutUser();
     }
 
+    handleFormSubmit = (e) => {
+        e.preventDefault();
+        switch(e.target.id) {
+            case 'card-form':
+                const card = {
+                    cardNumber: this.state.cardNumber,
+                    cardName: this.state.cardName,
+                    cardExp: this.state.cardExp,
+                    cvv: this.state.cvv,
+                };
+                this.props.addCard(card);
+                this.setState({ loading: true });
+                break;
+
+            case 'bank-form':
+                const bank = {
+                    accountNumber: this.state.accountNumber,
+                    accountName: this.state.accountName,
+                    bank: this.state.bank,
+                };
+                this.props.addBank(bank);
+                this.setState({ loading: true });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    setCardEnding = () => {
+        let card = this.state.cardNumber.toString().split('');
+        let cardEnding = [];
+        card.forEach((digit, index) => {
+            if (index >= card.length - 4) {
+                cardEnding.push(digit);
+            }
+        });
+
+        this.setState({
+            cardEnding: cardEnding.join('')
+        })
+        // const newCardEnding = cardEnding.join('');
+    }
+
     render () {
         const { state } = this;
-        const { color, errors, user } = this.state;
+        const { cardEnding, color, errors, user } = this.state;
         return (
             <Fragment>
                 <Helmet><title>Dashboard - Instaquiz</title></Helmet>
@@ -184,27 +299,31 @@ class Funds extends Component {
                                 <div className={classnames('funds-info', { 'hide': state.showCardDetails === false})}>
                                     <div>
                                         <p>This account is currently funded by</p>
-                                        <p>XXXX-XXXX-XXXX-XXXX</p>
+                                        <p>XXXX-XXXX-XXXX-{cardEnding}</p>
                                     </div>
                                     <div>
-                                        <button className="card-button">Change Credit Card</button>
+                                        <button onClick={this.handleAddPayment} id="change-card" className="card-button">Change Credit Card</button>
                                         <button className="card-button">Remove Credit Card</button>
                                     </div>
                                 </div>
-                                <div className={classnames('bank-details', { 'hide': state.showBankDetails === false })}>
-                                    <p><span className="title">Account Name:</span> Uzoanya Dominic Chinomso</p>
-                                    <p><span className="title">Account Number:</span> 0043031752</p>
-                                    <p><span className="title">Bank Name:</span> First City Monument Bank</p>
-                                    {/* <p>Bank Name: Diamond Bank</p> */}
+                                <div className={classnames('bank-container', { 'hide': state.showBankDetails === false })}>
+                                    <div className="bank-details">
+                                        <p><span className="title">Account Name:</span> {state.accountName}</p>
+                                        <p><span className="title">Account Number:</span> {state.accountNumber}</p>
+                                        <p><span className="title">Bank Name:</span> {state.bank}</p>
+                                    </div>
+                                    <div className="bank-details-button-container">
+                                        <button className="add-payment" id="change-bank" onClick={this.handleChangeBank}>Change Bank</button>
+                                    </div>
                                 </div>
                                 <section className={classnames('payment-message', { 'hide': state.showPaymentNotification === false })}>
-                                    <p><span className="mdi mdi-information-outline mdi-24px"></span>You do not have any means of funding your account. Please add a bank account and (or) a credit add to enable you make and receive payments.</p>
+                                    <p><span className="mdi mdi-information-outline mdi-24px"></span>Payment information is unavailable or incomplete. Please add a bank account and (or) a credit card to enable you make and receive payments.</p>
                                     <div>
-                                        <button className="add-payment" id="add-card" onClick={this.handleAddPayment}>Add Credit Card</button>
-                                        <button className="add-payment" id="add-bank" onClick={this.handleAddPayment}>Add Bank Account</button>
+                                        <button className={classnames('add-payment', { 'hide': state.showAddCardButton === false })} id="add-card" onClick={this.handleAddPayment}>Add Credit Card</button>
+                                        <button className={classnames('add-payment', { 'hide': state.showAddBankButton === false })} id="add-bank" onClick={this.handleAddPayment}>Add Bank Account</button>
                                     </div>
                                 </section>
-                                <form id="bank-form" className={classnames('', { 'hide': state.showBankForm === false })}>
+                                <form onSubmit={this.handleFormSubmit} id="bank-form" className={classnames('', { 'hide': state.showBankForm === false })}>
                                     <h5>Bank Account Details</h5>
                                     <p>Enter your local bank account details to be enable us send funds to your bank account.</p>
                                     <div className="row">
@@ -243,7 +362,7 @@ class Funds extends Component {
                                         <button disabled={state.disableEditBank} id="edit-bank" type="submit">Edit Details</button>
                                     </div>
                                 </form>
-                                <form id="card-form" className={classnames('', { 'hide': state.showCardForm === false })}>
+                                <form onSubmit={this.handleFormSubmit} id="card-form" className={classnames('', { 'hide': state.showCardForm === false })}>
                                     <h5>Credit Card Information</h5>
                                     <p>Provide card details to enable you funbd your e-wallet.</p>
                                     <div className="credit-card-container">
@@ -251,7 +370,7 @@ class Funds extends Component {
                                             icon="mdi mdi-credit-card prefix"
                                             id="cardNumber"
                                             name="cardNumber"
-                                            value={state.cardNumber}
+                                            value={state.cardNumber.toString()}
                                             onChange={this.onChange}
                                             label="Number on Card"
                                             errorMessage={errors.cardNumber}
@@ -271,19 +390,19 @@ class Funds extends Component {
                                     <div className="credit-card-container">
                                         <FundsTextInput
                                             icon="mdi mdi-calendar-month prefix"
-                                            id="expiryDate"
-                                            name="expiryDate"
-                                            value={state.expiryDate}
+                                            id="cardExp"
+                                            name="cardExp"
+                                            value={state.cardExp.toString()}
                                             onChange={this.onChange}
                                             label="Expiry Date"
-                                            errorMessage={errors.expiryDate}
+                                            errorMessage={errors.cardExp}
                                             info="XX/XX"
                                         />
                                         <FundsTextInput
                                             icon="mdi mdi-numeric prefix"
                                             id="cvv"
                                             name="cvv"
-                                            value={state.cvv}
+                                            value={state.cvv.toString()}
                                             onChange={this.onChange}
                                             label="CVV"
                                             errorMessage={errors.cvv}
@@ -299,17 +418,21 @@ class Funds extends Component {
                         <div><p>&copy; Copyright Instaquiz 2019</p></div>
                     </section>
                 </div>
+                <Spinner loading={this.state.loading} text="One moment . . ." />
             </Fragment>
         );
     }
 }
 
 Funds.propTypes = {
-    logoutUser: PropTypes.func.isRequired
+    addBank: PropTypes.func.isRequired,
+    addCard: PropTypes.func.isRequired,
+    logoutUser: PropTypes.func.isRequired,
+    removeBank: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { logoutUser })(Funds);
+export default connect(mapStateToProps, { addBank, addCard, logoutUser, removeBank })(Funds);

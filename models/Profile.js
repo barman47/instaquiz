@@ -54,6 +54,22 @@ const ProfileSchema = new Schema({
         type: String
     },
 
+    cardNumber: {
+        type: Number
+    },
+
+    cardName: {
+        type: String
+    },
+
+    cvv: {
+        type: Number
+    },
+
+    cardExp: {
+        type: String
+    },
+
     profilePicture: {
         data: Buffer,
         contentType: String

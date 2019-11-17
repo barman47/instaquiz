@@ -137,6 +137,66 @@ export const updateUserData = (userData) => (dispatch) => {
         });
 };
 
+export const addCard = (card) => (dispatch) => {
+    axios.post('/api/users/addCard', card)
+        .then(res => {
+            console.log(res.data);
+            if (localStorage.jwtToken) {
+                localStorage.removeItem('jwtToken');
+
+                const userData = res.data;
+                const token = userData.token;
+                delete userData.token;
+                
+                localStorage.setItem('jwtToken', token);
+                setAuthToken(token);
+                const decoded = jwt_decode(token);
+                dispatch(setCurrentUser(decoded));
+            }
+        })
+        .catch(err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        });
+};
+
+export const addBank = (bank) => (dispatch) => {
+    axios.post('/api/users/addBank', bank)
+        .then(res => {
+            console.log(res.data);
+            if (localStorage.jwtToken) {
+                localStorage.removeItem('jwtToken');
+
+                const userData = res.data;
+                const token = userData.token;
+                delete userData.token;
+                
+                localStorage.setItem('jwtToken', token);
+                setAuthToken(token);
+                const decoded = jwt_decode(token);
+                dispatch(setCurrentUser(decoded));
+            }
+        })
+        .catch(err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        });
+};
+
+export const removeBank = () => (dispatch) => {
+    axios.get('/api/users/removeBank')
+        .then()
+        .catch(err => {
+            dispatch({
+                type: GET_ERRORS
+            });
+        });
+};
+
 export const changePassword = (data) => (dispatch) => {
     axios.put('/api/users/changePassword', data)
         .then(res => dispatch({

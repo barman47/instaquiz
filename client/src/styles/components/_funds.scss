@@ -75,21 +75,24 @@
         color: $off-white;
     }
 
-    .bank-details {
-        color: lighten($off-black, 20%);
-        display: flex;
-        justify-content: space-evenly;
+    .bank-container {
         border: 1px solid darken($off-white, 10%);
         border-radius: 10px;
+        color: lighten($off-black, 20%);
         margin: $md auto;
         padding-top: $sm;
         padding-bottom: $sm;
         width: 95%;
     }
 
-    // .bank-details .title {
-    //     color: $blue;
-    // }
+    .bank-details {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .bank-details-button-container button {
+        margin-left: $xlg;
+    }
 
     form {
         border-radius: 5px;

@@ -110,18 +110,24 @@ router.post('/login', (req, res) => {
                                     lastName: user.lastName,
                                     username: user.username,
                                     email: user.email,
+                                    dateCreated: user.dateCreated,
                                     lastSeen: user.lastSeen,
-                                    createdAt: user.createAt,
                                     phone: user.phone,
                                     balance: profile.balance,
                                     totalEarnings: profile.totalEarnings,
                                     gamesPlayed: profile.gamesPlayed,
                                     rank: profile.rank,
+                                    rankPercentage: profile.rankPercentage,
                                     wins: profile.wins,
                                     losses: profile.losses,
                                     bank: profile.bank,
                                     accountName: profile.accountName,
-                                    accountNumber: profile.accountNumber
+                                    accountNumber: profile.accountNumber,
+                                    cardNumber: profile.cardNumber,
+                                    cardName: profile.cardName,
+                                    cvv: profile.cvv,
+                                    cardExp: profile.cardExp
+
                                 }; // JWT Payload
         
                                 // Sign the token
@@ -239,7 +245,7 @@ router.put('/updateData', passport.authenticate('jwt', { session: false }), (req
                                                 email: updatedUser.email,
                                                 phone: updatedUser.phone,
                                                 lastSeen: user.lastSeen,
-                                                createdAt: user.createAt,
+                                                dateCreated: user.dateCreated,
                                                 balance: profile.balance,
                                                 totalEarnings: profile.totalEarnings,
                                                 gamesPlayed: profile.gamesPlayed,
@@ -279,6 +285,121 @@ router.get('/quiz/category/:quizCategory', passport.authenticate('jwt', { sessio
     Quiz.find({ type: req.params.quizCategory })
         .then(quizzes => res.json(quizzes))
         .catch(err => console.log(err));
+});
+
+// add user credit card
+// @route POST /api/users/addCard
+// @desc Add Credit card to user account
+// @access Private
+router.post('/addCard', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log('card request');
+    console.log(req.user);
+    Profile.findOne({ user: req.user._id })
+        .then(profile => {
+            if (!profile) {
+                console.log('profile found ', profile);
+                return res.status(404).json({ msg: 'No profile found!' });
+            }
+            profile.cardNumber = req.body.cardNumber;
+            profile.cardName = req.body.cardName;
+            profile.cvv = req.body.cvv;
+            profile.cardExp = req.body.cardExp;
+            profile.save()
+                .then(profile => {
+                    console.log('user ', req.user);
+                    const payload = {
+                        id: req.user.id,
+                        username: req.user.username,
+                        firstName: req.user.firstName,
+                        lastName: req.user.lastName,
+                        email: req.user.email,
+                        phone: req.user.phone,
+                        lastSeen: req.user.lastSeen,
+                        dateCreated: req.user.dateCreated,
+                        balance: profile.balance,
+                        totalEarnings: profile.totalEarnings,
+                        gamesPlayed: profile.gamesPlayed,
+                        rank: profile.rank,
+                        wins: profile.wins,
+                        losses: profile.losses,
+                        bank: profile.bank,
+                        accountName: profile.accountName,
+                        accountNumber: profile.accountNumber,
+                        cardName: profile.cardName,
+                        cardNumber: profile.cardNumber,
+                        cvv: profile.cvv,
+                        cardExp: profile.cardExp
+                    };
+                    jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
+                        res.json({
+                            ...payload,
+                            success: 'Card added Successfully',
+                            token: `Bearer ${token}`
+                        });
+                    });
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: 'Something went wrong.' });
+        });
+});
+
+// add User Bank Details
+// @route POST /api/users/addBank
+// @desc Add Bank user bank account details
+// @access Private
+router.post('/addBank', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.body);
+    Profile.findOne({ user: req.user._id })
+        .then(profile => {
+            if (!profile) {
+                return res.status(404).json({ msg: 'No profile found!' });
+            }
+            profile.accountName = req.body.accountName;
+            profile.accountNumber = req.body.accountNumber;
+            profile.bank = req.body.bank;
+            profile.save()
+                .then(profile => {
+                    console.log('user ', req.user);
+                    const payload = {
+                        id: req.user.id,
+                        username: req.user.username,
+                        firstName: req.user.firstName,
+                        lastName: req.user.lastName,
+                        email: req.user.email,
+                        phone: req.user.phone,
+                        lastSeen: req.user.lastSeen,
+                        dateCreated: req.user.dateCreated,
+                        balance: profile.balance,
+                        totalEarnings: profile.totalEarnings,
+                        gamesPlayed: profile.gamesPlayed,
+                        rank: profile.rank,
+                        wins: profile.wins,
+                        losses: profile.losses,
+                        bank: profile.bank,
+                        accountName: profile.accountName,
+                        accountNumber: profile.accountNumber,
+                        cardName: profile.cardName,
+                        cardNumber: profile.cardNumber,
+                        cvv: profile.cvv,
+                        cardExp: profile.cardExp
+                    };
+                    jwt.sign(payload, keys.secretOrKey, { expiresIn: '30 days' }, (err, token) => {
+                        res.json({
+                            ...payload,
+                            success: 'Bank added Successfully',
+                            token: `Bearer ${token}`
+                        });
+                    });
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: 'Something went wrong.' });
+        });
 });
 
 // funds user account
